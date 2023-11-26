@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -51,8 +52,8 @@ public class Renderer extends Application
             return;
 
         Renderer.unit.set(unit);
-        instance.initialWindowWidth = width * unit;
-        instance.initialWindowHeight = height * unit;
+        initialWindowWidth = width * unit;
+        initialWindowHeight = height * unit;
 
         Renderer.eventConfig = eventConfig;
         Renderer.gameLogic = mainCode;
@@ -135,9 +136,13 @@ public class Renderer extends Application
             {
                 for (GameObject gameObject : gameObjects)
                 {
-                    Vec2 worldPos = gameObject.getWorldCoords();
-                    objectComps.get(gameObject).relocate(worldPos.x * unit.get() * scale.get(), worldPos.y * unit.get() * scale.get());
-                    objectComps.get(gameObject).setRotate(gameObject.getRotation());
+                    if(gameObject.needsUpdate())
+                    {
+                        Vec2 worldPos = gameObject.getWorldCoords();
+                        objectComps.get(gameObject).relocate(worldPos.x * unit.get() * scale.get(), worldPos.y * unit.get() * scale.get());
+                        objectComps.get(gameObject).setRotate(gameObject.getRotation());
+                        gameObject.update();
+                    }
                 }
             }
         }.start();
@@ -145,13 +150,11 @@ public class Renderer extends Application
         getCurrentGraphicsPipeline();
     }
 
-    public Rectangle createRectangle(double x, double y, double width, double height)
+    public Rectangle createRectangle(double width, double height)
     {
         Rectangle rectangle = new Rectangle();
         rectangle.widthProperty().bind(unit.multiply(width).multiply(scale));
         rectangle.heightProperty().bind(unit.multiply(height).multiply(scale));
-        rectangle.xProperty().bind(unit.multiply(x).multiply(scale));
-        rectangle.yProperty().bind(unit.multiply(y).multiply(scale));
         return rectangle;
     }
 
@@ -159,8 +162,8 @@ public class Renderer extends Application
 
 
     ArrayList<GameObject> gameObjects = new ArrayList<>();
-    HashMap<GameObject, Group> objectComps = new HashMap<>();
-    protected void registerGameObject(GameObject gameObject, Group rootNode)
+    HashMap<GameObject, Node> objectComps = new HashMap<>();
+    protected void registerGameObject(GameObject gameObject, Node rootNode)
     {
         Platform.runLater(() ->
         {
@@ -185,6 +188,14 @@ public class Renderer extends Application
         scale.set(Math.min(
             windowWidth / initialWindowWidth,
             windowHeight / initialWindowHeight));
+
+        for (GameObject gameObject : gameObjects)
+        {
+            Vec2 worldPos = gameObject.getWorldCoords();
+            objectComps.get(gameObject).relocate(worldPos.x * unit.get() * scale.get(), worldPos.y * unit.get() * scale.get());
+            objectComps.get(gameObject).setRotate(gameObject.getRotation());
+            gameObject.update();
+        }
 }
 private static void getCurrentGraphicsPipeline()
     {

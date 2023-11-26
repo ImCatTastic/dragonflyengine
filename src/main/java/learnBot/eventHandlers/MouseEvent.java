@@ -1,8 +1,8 @@
 package learnBot.eventHandlers;
 
 
-import learnBot.FOPEntity;
+import learnBot.Entity;
 import learnBot.Field;
 
-public record MouseEvent(Field field, FOPEntity[] entities)
+public record MouseEvent(Field field, Entity[] entities)
 {}

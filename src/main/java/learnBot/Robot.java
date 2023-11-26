@@ -1,18 +1,30 @@
 package learnBot;
 
-import engine.collider.BoxCollider2D;
+import learnBot.visualComponent.RobotVC;
 
-public class Robot extends FOPEntity
+public class Robot extends Entity
 {
-    public Robot(double x, double y)
+    private double speed = -1;
+    private Direction direction = Direction.UP;
+
+    public Robot(int x, int y)
     {
-        super(x, y, 0);
-        addCollider(new BoxCollider2D(0, 0, 50, 50));
+        super(x, y, Direction.UP);
+
+        if(!Config.headlessModeEnabled())
+        {
+            RobotVC robotVC =  new RobotVC(x, y);
+            robotVC.playMove();
+        }
     }
 
     public void move()
     {
 
-        //this.incX(2 * fac);
+    }
+
+    public void turnLeft()
+    {
+
     }
 }

@@ -5,11 +5,10 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import engine.collider.Collider2D;
 import engine.mathUtil.Vec2;
-import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.css.Rect;
 
 
 import java.util.ArrayList;
@@ -23,6 +22,18 @@ public class GameObject
     private Collider2D collider;
     private GameObject parent;
     private final Group rootNode = new Group();
+
+    private boolean needsUpdate = true;
+    public boolean needsUpdate()
+    {
+        return needsUpdate;
+    }
+
+    public void update()
+    {
+        needsUpdate = false;
+    }
+
     private final ArrayList<GameObject> children = new ArrayList<>();
 
     protected void setParent(GameObject parent)
@@ -48,7 +59,7 @@ public class GameObject
         return gameObject;
     }
 
-    public void addCollider(Collider2D collider2D)
+    protected void addCollider(Collider2D collider2D)
     {
         if(collider != null)
             return;
@@ -67,6 +78,11 @@ public class GameObject
         Renderer.getInstance().registerGameObject(this, rootNode);
     }
 
+    public GameObject(double x, double y)
+    {
+        this(x, y, 0);
+    }
+
     private void addShape(Shape shape)
     {
         Platform.runLater(() -> rootNode.getChildren().add(shape));
@@ -74,14 +90,28 @@ public class GameObject
 
     protected Rectangle addRectangle(double x, double y, double width, double height)
     {
-        Rectangle rectangle = Renderer.getInstance().createRectangle(x, y, width, height);
+        Rectangle rectangle = Renderer.getInstance().createRectangle(width, height);
+        rectangle.setX(x);
+        rectangle.setY(y);
         addShape(rectangle);
         return rectangle;
     }
 
+
+
     protected Rectangle addRectangle(double x, double y)
     {
         return addRectangle(x, y, 1, 1);
+    }
+
+    boolean hasUI = false;
+    protected void setUI(Pane ui)
+    {
+        if(!hasUI)
+        {
+            rootNode.getChildren().add(ui);
+            hasUI = true;
+        }
     }
 
     public Vec2 getWorldCoords()
@@ -112,30 +142,35 @@ public class GameObject
     {
         return getWorldCoords().y;
     }
-
-
     private void updatePosition()
     {
+        needsUpdate = true;
         if(hasCollider())
         {
             collider.updatePosition(position);
         }
     }
-
-
     public void incRotation(double value)
     {
         rotation += value;
+        needsUpdate = true;
     }
 
     public void setRotation(double rotation)
     {
         this.rotation = rotation;
+        needsUpdate = true;
     }
 
     public void setX(double x)
     {
         position.x = x;
+        updatePosition();
+    }
+
+    public void setY(double y)
+    {
+        position.y = y;
         updatePosition();
     }
 
