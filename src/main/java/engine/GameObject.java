@@ -1,13 +1,17 @@
 package engine;
 
 
+import engine.util.PropertyHolder;
+import engine.util.ShapeBuilder;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
 import engine.collider.Collider2D;
 import engine.mathUtil.Vec2;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import learnBot.visualComponent.RobotVC;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -16,9 +20,17 @@ import java.util.ArrayList;
 
 public class GameObject
 {
+    private static int objectCount = 0;
+
+    private final int id;
+
+    public int getId() {
+        return id;
+    }
+
+    private final Vec2 position = new Vec2(0,0);
+    private double rotation = 0;
     public final int zIndex;
-    private final Vec2 position;
-    public double rotation;
     private Collider2D collider;
     private GameObject parent;
     private final Group rootNode = new Group();
@@ -28,12 +40,10 @@ public class GameObject
     {
         return needsUpdate;
     }
-
     public void update()
     {
         needsUpdate = false;
     }
-
     private final ArrayList<GameObject> children = new ArrayList<>();
 
     protected void setParent(GameObject parent)
@@ -71,16 +81,23 @@ public class GameObject
 
     public GameObject(double x, double y, double rotation)
     {
-        position = new Vec2(x, y);
-        zIndex = 0;
+        this.id = objectCount++;
+        this.position.x = x;
+        this.position.y = y;
         this.rotation = rotation;
+        this.zIndex = 0;
 
-        Renderer.getInstance().registerGameObject(this, rootNode);
+        Engine.registerGameObject(this, rootNode);
     }
 
     public GameObject(double x, double y)
     {
         this(x, y, 0);
+    }
+
+    public GameObject()
+    {
+        this(0, 0, 0);
     }
 
     private void addShape(Shape shape)
@@ -90,7 +107,7 @@ public class GameObject
 
     protected Rectangle addRectangle(double x, double y, double width, double height)
     {
-        Rectangle rectangle = Renderer.getInstance().createRectangle(width, height);
+        Rectangle rectangle = ShapeBuilder.createRectangle(width, height);
         rectangle.setX(x);
         rectangle.setY(y);
         addShape(rectangle);
@@ -146,16 +163,8 @@ public class GameObject
     {
         needsUpdate = true;
         if(hasCollider())
-        {
             collider.updatePosition(position);
-        }
     }
-    public void incRotation(double value)
-    {
-        rotation += value;
-        needsUpdate = true;
-    }
-
     public void setRotation(double rotation)
     {
         this.rotation = rotation;
@@ -174,18 +183,6 @@ public class GameObject
         updatePosition();
     }
 
-    public void incX(double value)
-    {
-        position.x += value;
-        updatePosition();
-    }
-
-    public void incY(double value)
-    {
-        position.y += value;
-        updatePosition();
-    }
-
     public void setPosition(Vec2 position)
     {
         setPosition(position.x, position.y);
@@ -193,8 +190,8 @@ public class GameObject
 
     public void setPosition(double x, double y)
     {
-        this.position.x = x;
-        this.position.y = y;
+        position.x = x;
+        position.y = y;
         updatePosition();
     }
 

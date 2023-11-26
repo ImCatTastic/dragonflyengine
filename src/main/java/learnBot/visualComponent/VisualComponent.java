@@ -1,48 +1,38 @@
 package learnBot.visualComponent;
 
 import engine.GameObject;
+import engine.UpdateableGameObject;
 import learnBot.Config;
 import learnBot.World;
 
 import java.util.function.Function;
 
-public class VisualComponent extends GameObject
+public abstract class VisualComponent extends UpdateableGameObject
 {
     private double xOffset;
     private double yOffset;
     public VisualComponent(int x, int y, double xOffset, double yOffset)
     {
-        super(
-                x + Config.borderSize * x + xOffset,
-                World.getHeight() - 1 - y + Config.borderSize * (World.getHeight() - 1 - y) + yOffset
-        );
-
+        super(0,0);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
+        setX(getOffsetX(x));
+        setY(getOffsetY(y));
+    }
+    public double getOffsetX(double x)
+    {
+        return x + Config.borderSize * x + xOffset;
+    }
+    public double getOffsetY(double y)
+    {
+        return World.getHeight() - 1 - y + Config.borderSize * (World.getHeight() - 1 - y) + yOffset;
     }
 
-    @Override
-    public void setX(double x)
+    protected Function<Double, Double> getCustomInterpolator(final double speed)
     {
-        super.setX(x + Config.borderSize * x + xOffset);
-    }
-    @Override
-    public void setY(double y)
-    {
-        super.setY(y + Config.borderSize * y + yOffset);
-    }
+        double res = Math.max(0, Math.min(World.speedLimit, speed));
+        double blendFactor = Math.exp(-0.2 * res);
 
-    public void setExplicitX(double x)
-    {
-        super.setX(x);
-    }
-    public void setExplicitY(double y)
-    {
-        super.setY(y);
-    }
-
-    protected Function<Double, Double> getCustomInterpolator(final double blendFactor)
-    {
         return (t) ->
         {
             double linear = t;
@@ -50,18 +40,5 @@ public class VisualComponent extends GameObject
 
             return linear + blendFactor * (easeInOut - linear);
         };
-    }
-
-    protected void pause(int duration)
-    {
-        try
-        {
-            Thread.sleep(duration);
-        }
-
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 }

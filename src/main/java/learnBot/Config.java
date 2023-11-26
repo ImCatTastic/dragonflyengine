@@ -19,7 +19,6 @@ public class Config
         headlessMode = Boolean.parseBoolean(properties.getProperty("headless-mode"));
     }
     private static boolean headlessMode = false;
-
     public static boolean headlessModeEnabled()
     {
         return headlessMode;

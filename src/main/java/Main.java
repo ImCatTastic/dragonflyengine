@@ -8,28 +8,25 @@ public class Main
 {
     public static void main(String[] args)
     {
+        World.speed = 2;
         World.createWorld(8, 8, Main::entry);
     }
 
     public static void entry()
     {
         Robot robot = new Robot(3,4);
+        robot.setSpeed(0.5);
 
-        robot.move();
-        robot.turnLeft();
-        //robot.move();
-        //robot.move();
-
-        while (true)
+        for (int i = 0; i < 100; i++)
         {
-            //robot.incX(0.01);
-
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            robot.move();
+            robot.move();
+            robot.turnLeft();
         }
+
+
+        //robot.move();
+        //robot.move();
     }
 
     private static boolean checkCollision(Collider2D collider, Collider2D collider2)

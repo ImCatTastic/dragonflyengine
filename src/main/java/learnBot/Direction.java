@@ -26,7 +26,7 @@ public enum Direction
         return delta.y;
     }
     public boolean isHorizontal() {
-        return delta.x == 0;
+        return delta.x != 0;
     }
     public boolean isVertical() {
         return delta.x == 0;
