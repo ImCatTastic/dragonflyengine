@@ -1,6 +1,7 @@
 package learnBot;
 
 import engine.mathUtil.IVec2;
+import org.jetbrains.annotations.NotNull;
 
 public enum Direction
 {
@@ -13,9 +14,9 @@ public enum Direction
     {
         this.delta = delta;
     }
-    public IVec2 getDelta()
+    public @NotNull IVec2 getDelta()
     {
-        return delta;
+        return new IVec2(delta);
     }
     public int getDx()
     {
@@ -30,5 +31,9 @@ public enum Direction
     }
     public boolean isVertical() {
         return delta.x == 0;
+    }
+    public Direction getOpposite()
+    {
+        return Direction.values()[(ordinal() + 2) % 4];
     }
 }

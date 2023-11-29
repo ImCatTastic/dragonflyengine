@@ -1,41 +1,51 @@
 package engine.mathUtil;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 public class IVec2 implements Vector<IVec2>
 {
     public int x;
     public int y;
-
     public IVec2(int x, int y)
     {
         this.x = x;
         this.y = y;
     }
-    public IVec2(IVec2 IVec2)
+    public IVec2(@NotNull IVec2 iVec2)
     {
-        this.x = IVec2.x;
-        this.y = IVec2.y;
+        this.x = iVec2.x;
+        this.y = iVec2.y;
+    }
+    public IVec2(@NotNull Vec2 vec2)
+    {
+        this.x = (int) vec2.x;
+        this.y = (int) vec2.y;
+    }
+    public IVec2(@NotNull IVec3 iVec3)
+    {
+        this.x = iVec3.x;
+        this.y = iVec3.y;
     }
     public IVec2(@NotNull Vec3 vec3)
     {
         this.x = (int) vec3.x;
         this.y = (int) vec3.y;
     }
+    public IVec2(@NotNull IVec4 iVec4)
+    {
+        this.x = iVec4.x;
+        this.y = iVec4.y;
+    }
     public IVec2(@NotNull Vec4 vec4)
     {
         this.x = (int) vec4.x;
         this.y = (int) vec4.y;
     }
-
-
     public @NotNull String toString()
     {
         return "(" + x + "|" + y + ")";
     }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -45,159 +55,132 @@ public class IVec2 implements Vector<IVec2>
         IVec2 other = (IVec2) obj;
 
         return
-                this.x == other.x && 
-                this.y == other.y;
+                this.x == other.x &&
+                        this.y == other.y;
     }
-
     @Override
     public int hashCode()
     {
         return Objects.hash(x, y);
     }
-
-    public float getDistance(@NotNull IVec2 pos)
+    public double getDistance(@NotNull IVec2 iVec2)
     {
-        double deltaX = pos.x - x;
-        double deltaY = pos.y - y;
-
-        return (float) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        double deltaX = iVec2.x - x;
+        double deltaY = iVec2.y - y;
+        return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
     }
-
-    public @NotNull IVec2 add(@NotNull IVec2 vec)
+    public double getDistance(@NotNull Vec2 vec2)
     {
-        int resX = this.x + vec.x;
-        int resY = this.y + vec.y;
-        return new IVec2(resX, resY);
+        double deltaX = vec2.x - x;
+        double deltaY = vec2.y - y;
+        return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
     }
-
-    public @NotNull IVec2 sub(@NotNull IVec2 vec)
+    public IVec2 add(@NotNull IVec2 iVec2)
     {
-        int resX =  this.x - vec.x;
-        int resY =  this.y - vec.y;
-        return new IVec2(resX, resY);
+		return new IVec2(x + iVec2.x, y + iVec2.y); 
     }
-
-    public @NotNull IVec2 subr(@NotNull IVec2 vec)
+    public IVec2 sub(@NotNull IVec2 iVec2)
     {
-        int resX =  vec.x - this.x;
-        int resY =  vec.y - this.y;
-        return new IVec2(resX, resY);
+		return new IVec2(x - iVec2.x, y - iVec2.y);
     }
-
-    public @NotNull IVec2 mult(@NotNull IVec2 vec)
+    public IVec2 subr(@NotNull IVec2 iVec2)
     {
-        int resX = this.x * vec.x;
-        int resY = this.y * vec.y;
-        return new IVec2(resX, resY);
+        return new IVec2(iVec2.x - x , iVec2.y - y);
     }
-
-    public @NotNull IVec2 div(@NotNull IVec2 vec)
+    public IVec2 mult(@NotNull IVec2 iVec2)
     {
-        int resX = this.x / vec.x;
-        int resY = this.y / vec.y;
-        return new IVec2(resX, resY);
+		return new IVec2(x * iVec2.x, y * iVec2.y); 
     }
-
-    public @NotNull IVec2 divr(@NotNull IVec2 vec)
+    public IVec2 div(@NotNull IVec2 iVec2)
     {
-        int resX = vec.x / this.x;
-        int resY = vec.y / this.y;
-        return new IVec2(resX, resY);
+		return new IVec2(x / iVec2.x, y / iVec2.y); 
     }
-
+    public IVec2 divr(@NotNull IVec2 iVec2)
+    {
+        return new IVec2(iVec2.x / x , iVec2.y / y);
+    }
+    public IVec2 add(@NotNull Vec2 vec2)
+    {
+		return new IVec2(x + (int) vec2.x, y + (int) vec2.y); 
+    }
+    public IVec2 sub(@NotNull Vec2 vec2)
+    {
+		return new IVec2(x - (int) vec2.x, y - (int) vec2.y); 
+    }
+    public IVec2 subr(@NotNull Vec2 vec2)
+    {
+        return new IVec2((int) vec2.x - x , (int) vec2.y - y);
+    }
+    public IVec2 mult(@NotNull Vec2 vec2)
+    {
+		return new IVec2(x * (int) vec2.x, y * (int) vec2.y); 
+    }
+    public IVec2 div(@NotNull Vec2 vec2)
+    {
+		return new IVec2(x / (int) vec2.x, y / (int) vec2.y); 
+    }
+    public IVec2 divr(@NotNull Vec2 vec2)
+    {
+        return new IVec2((int) vec2.x / x , (int) vec2.y / y);
+    }
     @Override
-    public @NotNull IVec2 add(int value)
+    public IVec2 add(double value)
     {
-        int resX = this.x + value;
-        int resY = this.y + value;
-        return new IVec2(resX, resY);
+		return new IVec2(x + (int) value, y + (int) value); 
     }
-
     @Override
-    public @NotNull IVec2 sub(int value)
+    public IVec2 sub(double value)
     {
-        int resX = this.x - value;
-        int resY = this.y - value;
-        return new IVec2(resX, resY);
+		return new IVec2(x - (int) value, y - (int) value); 
     }
-
-    public @NotNull IVec2 subr(int value)
-    {
-        int resX =  value - this.x;
-        int resY =  value - this.y;
-        return new IVec2(resX, resY);
-    }
-
     @Override
-    public @NotNull IVec2 mult(int value)
+    public IVec2 subr(double value)
     {
-        int resX = this.x * value;
-        int resY = this.y * value;
-        return new IVec2(resX, resY);
+        return new IVec2((int) value - x , (int) value - y);
     }
-
     @Override
-    public @NotNull IVec2 div(int value)
+    public IVec2 mult(double value)
     {
-        int resX = this.x / value;
-        int resY = this.y / value;
-        return new IVec2(resX, resY);
+		return new IVec2(x * (int) value, y * (int) value); 
     }
-
     @Override
-    public @NotNull IVec2 divr(int value)
+    public IVec2 div(double value)
     {
-        int resX = value / this.x;
-        int resY = value / this.y;
-        return new IVec2(resX, resY);
+		return new IVec2(x / (int) value, y / (int) value); 
     }
-
     @Override
-    public @NotNull IVec2 add(float value)
+    public IVec2 divr(double value)
     {
-        int resX = (int)(this.x + value);
-        int resY = (int)(this.y + value);
-        return new IVec2(resX, resY);
+        return new IVec2((int) value / x , (int) value / y);
     }
-
     @Override
-    public @NotNull IVec2 sub(float value)
+    public IVec2 add(int value)
     {
-        int resX = (int)(this.x - value);
-        int resY = (int)(this.y - value);
-        return new IVec2(resX, resY);
+		return new IVec2(x + value, y + value); 
     }
-
     @Override
-    public @NotNull IVec2 subr(float value)
+    public IVec2 sub(int value)
     {
-        int resX =  (int)(value - this.x);
-        int resY =  (int)(value - this.y);
-        return new IVec2(resX, resY);
+		return new IVec2(x - value, y - value); 
     }
-
     @Override
-    public @NotNull IVec2 mult(float value)
+    public IVec2 subr(int value)
     {
-        int resX = (int)(this.x * value);
-        int resY = (int)(this.y * value);
-        return new IVec2(resX, resY);
+        return new IVec2(value - x , value - y);
     }
-
     @Override
-    public @NotNull IVec2 div(float value)
+    public IVec2 mult(int value)
     {
-        int resX = (int)(this.x / value);
-        int resY = (int)(this.y / value);
-        return new IVec2(resX, resY);
+		return new IVec2(x * value, y * value); 
     }
-
     @Override
-    public @NotNull IVec2 divr(float value)
+    public IVec2 div(int value)
     {
-        int resX = (int)(value / this.x);
-        int resY = (int)(value / this.y);
-        return new IVec2(resX, resY);
+		return new IVec2(x / value, y / value); 
+    }
+    @Override
+    public IVec2 divr(int value)
+    {
+		return new IVec2(value / x , value / y);
     }
 }
-

@@ -1,10 +1,11 @@
 package learnBot.visualComponent;
 
-import engine.GameObject;
 import engine.UpdateableGameObject;
 import learnBot.Config;
+import learnBot.FOPAnimation;
 import learnBot.World;
 
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
 
 public abstract class VisualComponent extends UpdateableGameObject
@@ -19,15 +20,35 @@ public abstract class VisualComponent extends UpdateableGameObject
         setX(getOffsetX(x));
         setY(getOffsetY(y));
     }
-    public double getOffsetX(double x)
+    public VisualComponent(int x, int y, double offset)
     {
-        return x + Config.borderSize * x + xOffset;
+        super(0,0);
+        this.xOffset = offset;
+        this.yOffset = offset;
+        setX(getOffsetX(x));
+        setY(getOffsetY(y));
     }
-    public double getOffsetY(double y)
+    protected double getOffsetX(double x)
     {
-        return World.getHeight() - 1 - y + Config.borderSize * (World.getHeight() - 1 - y) + yOffset;
+        return x + Config.BORDER_SIZE_FACTOR * x + xOffset;
     }
-
+    protected double getOffsetY(double y)
+    {
+        return World.getHeight() - 1 - y + Config.BORDER_SIZE_FACTOR * (World.getHeight() - 1 - y) + yOffset;
+    }
+    protected int animationsInQueue()
+    {
+        return animations.size();
+    }
+    ConcurrentLinkedDeque<FOPAnimation> animations = new ConcurrentLinkedDeque<>();
+    protected void playAnimation(FOPAnimation animation)
+    {
+        animations.add(animation);
+    }
+    public void update()
+    {
+        animations.removeIf(FOPAnimation::update);
+    }
     protected Function<Double, Double> getCustomInterpolator(final double speed)
     {
         double res = Math.max(0, Math.min(World.speedLimit, speed));

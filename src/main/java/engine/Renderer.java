@@ -121,15 +121,19 @@ public class Renderer extends Application
 
     private void updateObjects(boolean checkUpdate)
     {
+        var unit = Engine.getUnits().refUnit() * Engine.getUnits().scale().get();
+
         for (GameObject gameObject : gameObjects)
         {
             if(gameObject.needsUpdate() || !checkUpdate)
             {
-                Vec2 worldPos = gameObject.getWorldCoords();
-                objectComps.get(gameObject.getId()).relocate(
-                        worldPos.x * Engine.getUnits().refUnit() * Engine.getUnits().scale().get(),
-                        worldPos.y * Engine.getUnits().refUnit() * Engine.getUnits().scale().get());
-                objectComps.get(gameObject.getId()).setRotate(gameObject.getRotation());
+                var root = objectComps.get(gameObject.getId());
+                var worldPos = gameObject.getWorldCoords();
+
+                root.relocate(worldPos.x * unit, worldPos.y * unit);
+                root.setRotate(gameObject.getRotation());
+                root.setScaleX(gameObject.getScaleX());
+                root.setScaleY(gameObject.getScaleY());
             }
         }
     }

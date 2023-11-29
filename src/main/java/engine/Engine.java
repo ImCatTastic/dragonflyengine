@@ -1,6 +1,7 @@
 package engine;
 
 
+import engine.animation.Animation;
 import engine.util.Units;
 import javafx.application.Application;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -22,7 +23,8 @@ public class Engine
     public static double height = 10;
     public static double unit = 40;
     private static boolean running = false;
-    private static MainLoop loop = new MainLoop();
+    private final static MainLoop loop = new MainLoop();
+    public final static AnimationHandler animationHandler = new AnimationHandler();
     private static Units units;
     public static Units getUnits()
     {
@@ -35,15 +37,13 @@ public class Engine
 
         running = true;
         units = new Units(width, height, unit, new SimpleDoubleProperty(1));
-        Renderer.onLoadComplete(() -> loop.start(manager));
+        Renderer.onLoadComplete(() -> loop.start(manager, animationHandler));
         Application.launch(Renderer.class);
     }
-
     public static void stop()
     {
         loop.stop();
     }
-
     private final ArrayList<KeyListener> keyListeners = new ArrayList<>();
     private final ArrayList<MouseListener> mouseListeners = new ArrayList<>();
     private final Set<KeyCode> keysPressed = new HashSet<>();

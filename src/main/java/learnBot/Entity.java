@@ -4,14 +4,16 @@ import learnBot.visualComponent.VisualComponent;
 
 public class Entity
 {
-    private int x;
-    private int y;
-    private Direction direction;
+    protected int x;
+    protected int y;
+    protected Direction direction;
+    protected VisualComponent visualComponent;
     public Entity(int x, int y, Direction direction)
     {
         this.x = x;
         this.y = y;
         this.direction = direction;
+        World.registerEntity(this);
     }
     public int getX()
     {

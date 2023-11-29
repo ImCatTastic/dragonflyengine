@@ -1,39 +1,29 @@
 package engine;
 
-
-import engine.util.PropertyHolder;
-import engine.util.ShapeBuilder;
+import engine.animation.Animation;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
 import engine.collider.Collider2D;
 import engine.mathUtil.Vec2;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import learnBot.visualComponent.RobotVC;
 import org.jetbrains.annotations.NotNull;
-
-
 import java.util.ArrayList;
 
 
 public class GameObject
 {
     private static int objectCount = 0;
-
     private final int id;
-
     public int getId() {
         return id;
     }
 
-    private final Vec2 position = new Vec2(0,0);
-    private double rotation = 0;
+    protected final Transform2D transform;
     public final int zIndex;
     private Collider2D collider;
     private GameObject parent;
-    private final Group rootNode = new Group();
+    protected final Group rootNode = new Group();
 
     private boolean needsUpdate = true;
     public boolean needsUpdate()
@@ -75,21 +65,19 @@ public class GameObject
             return;
 
         this.collider = collider2D;
-        collider.updatePosition(position);
+        collider.updatePosition(transform.position);
         Platform.runLater(() -> rootNode.getChildren().add(collider2D.getNode()));
     }
 
     public GameObject(double x, double y, double rotation)
     {
         this.id = objectCount++;
-        this.position.x = x;
-        this.position.y = y;
-        this.rotation = rotation;
+
+        this.transform = new Transform2D(new Vec2(x, y), new Vec2(1,1), rotation);
         this.zIndex = 0;
 
         Engine.registerGameObject(this, rootNode);
     }
-
     public GameObject(double x, double y)
     {
         this(x, y, 0);
@@ -100,27 +88,19 @@ public class GameObject
         this(0, 0, 0);
     }
 
-    private void addShape(Shape shape)
+    protected void addShape(Shape shape)
     {
         Platform.runLater(() -> rootNode.getChildren().add(shape));
     }
 
-    protected Rectangle addRectangle(double x, double y, double width, double height)
+    public void hide()
     {
-        Rectangle rectangle = ShapeBuilder.createRectangle(width, height);
-        rectangle.setX(x);
-        rectangle.setY(y);
-        addShape(rectangle);
-        return rectangle;
+        Platform.runLater(() -> rootNode.setVisible(false));
     }
-
-
-
-    protected Rectangle addRectangle(double x, double y)
+    public void reveal()
     {
-        return addRectangle(x, y, 1, 1);
+        Platform.runLater(() -> rootNode.setVisible(true));
     }
-
     boolean hasUI = false;
     protected void setUI(Pane ui)
     {
@@ -130,82 +110,112 @@ public class GameObject
             hasUI = true;
         }
     }
-
-    public Vec2 getWorldCoords()
+    public final Vec2 getWorldCoords()
     {
-        double x = position.x;
-        double y = position.y;
+        final Vec2 pos = new Vec2(transform.position);
 
         if(parent != null)
-        {
-            Vec2 pos = parent.getWorldCoords();
-            x += pos.x;
-            y += pos.y;
-        }
+            pos.add(parent.getWorldCoords());
 
-        return new Vec2(x,y);
+        return pos;
     }
-
-    public double getRotation() {
-        return rotation;
+    public void setPosition(Vec2 newPosition)
+    {
+        transform.position.x = newPosition.x;
+        transform.position.y = newPosition.y;
+        requestUpdate();
     }
-
+    public void setPosition(double x, double y)
+    {
+        transform.position.x = x;
+        transform.position.y = y;
+        requestUpdate();
+    }
+    public void setX(double x)
+    {
+        transform.position.x = x;
+        requestUpdate();
+    }
+    public void incX(double x)
+    {
+        transform.position.x += x;
+        requestUpdate();
+    }
+    public double getLocalX()
+    {
+        return transform.position.x;
+    }
     public double getWorldX()
     {
         return getWorldCoords().x;
     }
-
+    public void setY(double y)
+    {
+        transform.position.y = y;
+        requestUpdate();
+    }
+    public void incY(double y)
+    {
+        transform.position.y += y;
+        requestUpdate();
+    }
+    public double getLocalY()
+    {
+        return transform.position.y;
+    }
     public double getWorldY()
     {
         return getWorldCoords().y;
     }
-    private void updatePosition()
+    public void setRotation(double rotation)
+    {
+        transform.rotation = rotation;
+    }
+    public double getRotation()
+    {
+        return transform.rotation;
+    }
+    public void setScale(double scale)
+    {
+        transform.scale.x = scale;
+        transform.scale.y = scale;
+    }
+    public void setScaleX(double scaleX)
+    {
+        transform.scale.x = scaleX;
+    }
+    public double getScaleX()
+    {
+        return transform.scale.x;
+    }
+    public void setScaleY(double scaleY)
+    {
+        transform.scale.y = scaleY;
+    }
+    public double getScaleY()
+    {
+        return transform.scale.y;
+    }
+    private void requestUpdate()
     {
         needsUpdate = true;
         if(hasCollider())
-            collider.updatePosition(position);
+            collider.updatePosition(transform.position);
     }
-    public void setRotation(double rotation)
-    {
-        this.rotation = rotation;
-        needsUpdate = true;
-    }
-
-    public void setX(double x)
-    {
-        position.x = x;
-        updatePosition();
-    }
-
-    public void setY(double y)
-    {
-        position.y = y;
-        updatePosition();
-    }
-
-    public void setPosition(Vec2 position)
-    {
-        setPosition(position.x, position.y);
-    }
-
-    public void setPosition(double x, double y)
-    {
-        position.x = x;
-        position.y = y;
-        updatePosition();
-    }
-
     public Collider2D getCollider() {
         return collider;
     }
-
     public boolean hasCollider()
     {
         return collider != null;
     }
-
     public int getZIndex()
     {
         return zIndex;
+    }
+
+    protected void queueAnimation(Animation animation)
+    {
+        Engine.animationHandler.queueAnimation(animation);
     }
 }

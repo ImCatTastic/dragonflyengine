@@ -2,31 +2,43 @@ package learnBot;
 
 import engine.GameObject;
 import engine.collider.BoxCollider2D;
+import engine.util.ShapeBuilder;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import learnBot.visualComponent.BlockVC;
+import learnBot.visualComponent.WallVC;
 
-public class Wall extends GameObject
+class Wall extends Entity implements Obstacle
 {
-    public Wall(Direction direction)
+    public Wall(int x, int y, boolean horizontal)
     {
-        super(
-                direction == Direction.RIGHT ? World.getWidth() + World.getWidth() * Config.borderSize : 0,
-                direction == Direction.DOWN ? World.getHeight() + (World.getHeight()) * Config.borderSize  : 0,
-                0);
+        super(x, y, horizontal ? Direction.UP : Direction.RIGHT);
 
-        double border = Config.borderSize;
-        double worldW = World.getWidth() + World.getWidth() * border;
-        double worldH = World.getHeight() + World.getHeight() * border;
+        int counterWallX = !horizontal && x + 1 < World.getWidth() - 1 ? x + 1 : 0;
+        int counterWallY = horizontal && y + 1 < World.getHeight() - 1 ? y + 1 : 0;
 
-        double x = direction == Direction.RIGHT ? worldW : 0;
-        double y = direction == Direction.DOWN ? worldH : 0;
+        if(!Config.headlessModeEnabled())
+            new WallVC(x, y, horizontal ? Direction.UP : Direction.RIGHT);
 
-        double width    = direction.isHorizontal() ? worldW + border : border;
-        double height   = direction.isHorizontal() ? border : worldH + border;
+        new Wall(counterWallX, counterWallY, getDirection().getOpposite());
+    }
 
-        addCollider(new BoxCollider2D(x, y, x + width, y + height));
+    private Wall(int x, int y, Direction direction)
+    {
+        super(x, y, direction);
+    }
 
-        Rectangle body = addRectangle(x, y, width, height);
-        body.setFill(new Color(255 / 255d,255 / 255d,255 / 255d,1));
+    @Override
+    public boolean isBlockingPath(Entity entity, boolean teleport)
+    {
+        if(teleport)
+            return false;
+
+        return entity.getDirection().ordinal() == (getDirection().ordinal() + 2) % Direction.values().length;
+    }
+    @Override
+    public void collide(Entity entity, double speed)
+    {
+
     }
 }

@@ -4,14 +4,7 @@ import java.util.function.Function;
 
 public class Interpolator
 {
-    protected Function<Double, Double> getCustomInterpolator(final double blendFactor)
-    {
-        return (t) ->
-        {
-            double linear = t;
-            double easeInOut = 3 * t * t - 2 * t * t * t;
-
-            return linear + blendFactor * (easeInOut - linear);
-        };
-    }
+    public final static Function<Double, Double> EASE_IN = (t) -> t * t;
+    public final static Function<Double, Double> EASE_OUT = (t) -> 1.0 - (1.0 - t) * (1.0 - t);
+    public final static Function<Double, Double> EASE_IN_OUT = (t) -> 3 * t * t - 2 * t * t * t;
 }

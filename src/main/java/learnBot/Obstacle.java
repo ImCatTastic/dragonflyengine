@@ -1,12 +1,7 @@
 package learnBot;
 
-import engine.GameObject;
-
-public abstract class Obstacle extends GameObject
+public interface Obstacle
 {
-    public Obstacle()
-    {
-        super(0,0,0);
-
-    }
+    boolean isBlockingPath(Entity entity, boolean teleport);
+    void collide(Entity entity, double speed);
 }

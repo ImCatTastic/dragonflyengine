@@ -1,9 +1,8 @@
 package engine;
 
 import engine.util.Time;
-import learnBot.Sync;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static engine.Engine.frameTime;
@@ -14,7 +13,6 @@ public class MainLoop
     private boolean stopped = false;
     private boolean paused = false;
     private boolean running = false;
-
     public void addObject(UpdateableGameObject object)
     {
         objects.add(object);
@@ -23,8 +21,7 @@ public class MainLoop
     {
         objects.remove(object);
     }
-
-    public void start(GameManager manager)
+    public void start(@NotNull final GameManager manager, @NotNull final AnimationHandler animationHandler)
     {
         if(running)
             return;
@@ -44,7 +41,10 @@ public class MainLoop
 
                 if (elapsedTime >= frameTime)
                 {
-                    Time.deltaTime = elapsedTime;
+                    Time.iDeltaTime = (int) elapsedTime;
+                    Time.deltaTime = elapsedTime * 0.001d;
+
+                    animationHandler.update();
                     if(!paused)
                     {
                         manager.onUpdate();

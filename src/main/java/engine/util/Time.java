@@ -3,6 +3,7 @@ package engine.util;
 public class Time
 {
     public static double deltaTime;
+    public static int iDeltaTime;
 
     public static void pause(int duration)
     {

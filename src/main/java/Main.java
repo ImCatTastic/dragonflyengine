@@ -1,6 +1,11 @@
 import engine.BoundingBox2D;
+import engine.Engine;
+import engine.animation.DoubleTransition;
+import engine.animation.VectorTransition;
 import engine.collider.BoxCollider2D;
 import engine.collider.Collider2D;
+import engine.mathUtil.Vec2;
+import engine.util.Time;
 import learnBot.Robot;
 import learnBot.World;
 
@@ -14,19 +19,37 @@ public class Main
 
     public static void entry()
     {
-        Robot robot = new Robot(3,4);
-        robot.setSpeed(0.5);
+        Robot robot = new Robot(2,4);
+        robot.setSpeed(2);
 
-        for (int i = 0; i < 100; i++)
+        World.placeCoin(0, World.getHeight() - 1);
+        World.placeBlock(World.getWidth() - 1, World.getHeight() - 1);
+        World.placeWall(0,0, true);
+        World.placeWall(0,0, false);
+
+        final boolean teleport = false;
+
+        for (int i = 0; i < 1000; i++)
         {
-            robot.move();
-            robot.move();
-            robot.turnLeft();
+            if(teleport)
+            {
+                int x = (int) (Math.random() * (World.getWidth()));
+                int y = (int) (Math.random() * (World.getHeight()));
+                robot.teleport(x,y);
+            }
+
+            else
+            {
+                if(robot.isOnCoin())
+                    robot.collectCoin();
+
+                if(!robot.isFrontClear())
+                    robot.turnLeft();
+
+                robot.move();
+            }
         }
 
-
-        //robot.move();
-        //robot.move();
     }
 
     private static boolean checkCollision(Collider2D collider, Collider2D collider2)

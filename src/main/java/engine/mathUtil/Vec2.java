@@ -1,41 +1,51 @@
 package engine.mathUtil;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 public class Vec2 implements Vector<Vec2>
 {
     public double x;
     public double y;
-
     public Vec2(double x, double y)
     {
         this.x = x;
         this.y = y;
     }
-    public Vec2(Vec2 vec2)
+    public Vec2(@NotNull Vec2 vec2)
     {
-        this.x = vec2.x;
-        this.y = vec2.y;
+        x = vec2.x;
+        y = vec2.y;
+    }
+    public Vec2(@NotNull IVec2 iVec2)
+    {
+        x = iVec2.x;
+        y = iVec2.y;
     }
     public Vec2(@NotNull Vec3 vec3)
     {
-        this.x = vec3.x;
-        this.y = vec3.y;
+        x = vec3.x;
+        y = vec3.y;
+    }
+    public Vec2(@NotNull IVec3 iVec3)
+    {
+        x = iVec3.x;
+        y = iVec3.y;
     }
     public Vec2(@NotNull Vec4 vec4)
     {
-        this.x = vec4.x;
-        this.y = vec4.y;
+        x = vec4.x;
+        y = vec4.y;
     }
-
-
+    public Vec2(@NotNull IVec4 iVec4)
+    {
+        x = iVec4.x;
+        y = iVec4.y;
+    }
     public @NotNull String toString()
     {
         return "(" + x + "|" + y + ")";
     }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -45,158 +55,132 @@ public class Vec2 implements Vector<Vec2>
         Vec2 other = (Vec2) obj;
 
         return
-            this.x == other.x &&
-            this.y == other.y;
+            x == other.x &&
+            y == other.y;
     }
-
     @Override
     public int hashCode()
     {
         return Objects.hash(x, y);
     }
-
-    public float getDistance(@NotNull Vec2 pos)
+    public double getDistance(@NotNull Vec2 pos)
     {
         double deltaX = pos.x - x;
         double deltaY = pos.y - y;
-
-        return (float) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
     }
-
-    public @NotNull Vec2 add(@NotNull Vec2 vec)
+    public double getDistance(@NotNull IVec2 pos)
     {
-        double resX = this.x + vec.x;
-        double resY = this.y + vec.y;
-        return new Vec2(resX, resY);
+        double deltaX = pos.x - x;
+        double deltaY = pos.y - y;
+        return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
     }
-
-    public @NotNull Vec2 sub(@NotNull Vec2 vec)
+    public Vec2 add(@NotNull Vec2 vec2)
     {
-        double resX =  this.x - vec.x;
-        double resY =  this.y - vec.y;
-        return new Vec2(resX, resY);
+        return new Vec2(x + vec2.x, y + vec2.y);
     }
-
-    public @NotNull Vec2 subr(@NotNull Vec2 vec)
+    public Vec2 sub(@NotNull Vec2 vec2)
     {
-        double resX =  vec.x - this.x;
-        double resY =  vec.y - this.y;
-        return new Vec2(resX, resY);
+		return new Vec2(x - vec2.x, y - vec2.y);
     }
-
-    public @NotNull Vec2 mult(@NotNull Vec2 vec)
+    public Vec2 subr(@NotNull Vec2 vec2)
     {
-        double resX = this.x * vec.x;
-        double resY = this.y * vec.y;
-        return new Vec2(resX, resY);
+		return new Vec2(vec2.x - x, vec2.y - y);
     }
-
-    public @NotNull Vec2 div(@NotNull Vec2 vec)
+    public Vec2 mult(@NotNull Vec2 vec2)
     {
-        double resX = this.x / vec.x;
-        double resY = this.y / vec.y;
-        return new Vec2(resX, resY);
+		return new Vec2(x * vec2.x, y * vec2.y);
     }
-
-    public @NotNull Vec2 divr(@NotNull Vec2 vec)
+    public Vec2 div(@NotNull Vec2 vec2)
     {
-        double resX = vec.x / this.x;
-        double resY = vec.y / this.y;
-        return new Vec2(resX, resY);
+		return new Vec2(x / vec2.x, y / vec2.y);
     }
-
+    public Vec2 divr(@NotNull Vec2 vec2)
+    {
+		return new Vec2(vec2.x / x, vec2.y / y);
+    }
+    public Vec2 add(@NotNull IVec2 iVec2)
+    {
+		return new Vec2(x + iVec2.x, y + iVec2.y);
+    }
+    public Vec2 sub(@NotNull IVec2 iVec2)
+    {
+		return new Vec2(x - iVec2.x, y - iVec2.y);
+    }
+    public Vec2 subr(@NotNull IVec2 iVec2)
+    {
+		return new Vec2(iVec2.x - x, iVec2.y - y);
+    }
+    public Vec2 mult(@NotNull IVec2 iVec2)
+    {
+		return new Vec2(x * iVec2.x, y * iVec2.y);
+    }
+    public Vec2 div(@NotNull IVec2 iVec2)
+    {
+		return new Vec2(x / iVec2.x, y / iVec2.y);
+    }
+    public Vec2 divr(@NotNull IVec2 iVec2)
+    {
+		return new Vec2(iVec2.x / x, iVec2.y / y);
+    }
     @Override
-    public @NotNull Vec2 add(int value)
+    public Vec2 add(double value)
     {
-        double resX = this.x + value;
-        double resY = this.y + value;
-        return new Vec2(resX, resY);
+		return new Vec2(x + value, y + value);
     }
-
     @Override
-    public @NotNull Vec2 sub(int value)
+    public Vec2 sub(double value)
     {
-        double resX = this.x - value;
-        double resY = this.y - value;
-        return new Vec2(resX, resY);
+		return new Vec2(x - value, y - value);
     }
-
-    public @NotNull Vec2 subr(int value)
-    {
-        double resX =  value - this.x;
-        double resY =  value - this.y;
-        return new Vec2(resX, resY);
-    }
-
     @Override
-    public @NotNull Vec2 mult(int value)
+    public Vec2 subr(double value)
     {
-        double resX = this.x * value;
-        double resY = this.y * value;
-        return new Vec2(resX, resY);
+		return new Vec2(value - x, value - y);
     }
-
     @Override
-    public @NotNull Vec2 div(int value)
+    public Vec2 mult(double value)
     {
-        double resX = this.x / value;
-        double resY = this.y / value;
-        return new Vec2(resX, resY);
+		return new Vec2(x * value, y * value);
     }
-
     @Override
-    public @NotNull Vec2 divr(int value)
+    public Vec2 div(double value)
     {
-        double resX = value / this.x;
-        double resY = value / this.y;
-        return new Vec2(resX, resY);
+		return new Vec2(x / value, y / value);
     }
-
     @Override
-    public @NotNull Vec2 add(float value)
+    public Vec2 divr(double value)
     {
-        int resX = (int)(this.x + value);
-        int resY = (int)(this.y + value);
-        return new Vec2(resX, resY);
+		return new Vec2(value / x, value / y);
     }
-
     @Override
-    public @NotNull Vec2 sub(float value)
+    public Vec2 add(int value)
     {
-        int resX = (int)(this.x - value);
-        int resY = (int)(this.y - value);
-        return new Vec2(resX, resY);
+		return new Vec2(x + value, y + value);
     }
-
     @Override
-    public @NotNull Vec2 subr(float value)
+    public Vec2 sub(int value)
     {
-        int resX =  (int)(value - this.x);
-        int resY =  (int)(value - this.y);
-        return new Vec2(resX, resY);
+		return new Vec2(x - value, y - value);
     }
-
     @Override
-    public @NotNull Vec2 mult(float value)
+    public Vec2 subr(int value)
     {
-        int resX = (int)(this.x * value);
-        int resY = (int)(this.y * value);
-        return new Vec2(resX, resY);
+		return new Vec2(value - x, value - y);
     }
-
     @Override
-    public @NotNull Vec2 div(float value)
+    public Vec2 mult(int value)
     {
-        int resX = (int)(this.x / value);
-        int resY = (int)(this.y / value);
-        return new Vec2(resX, resY);
+		return new Vec2(x * value, y * value);
     }
-
     @Override
-    public @NotNull Vec2 divr(float value)
+    public Vec2 div(int value)
     {
-        int resX = (int)(value / this.x);
-        int resY = (int)(value / this.y);
-        return new Vec2(resX, resY);
+		return new Vec2(x / value, y / value);
+    }
+    @Override
+    public Vec2 divr(int value)
+    {
+		return new Vec2(value / x, value / y);
     }
 }

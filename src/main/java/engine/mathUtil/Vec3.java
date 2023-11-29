@@ -1,7 +1,6 @@
 package engine.mathUtil;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 public class Vec3 implements Vector<Vec3>
@@ -15,35 +14,47 @@ public class Vec3 implements Vector<Vec3>
         this.y = y;
         this.z = z;
     }
+    public Vec3(@NotNull Vec2 vec2)
+    {
+        x = vec2.x;
+        y = vec2.y;
+        z = 0;
+    }
+    public Vec3(@NotNull IVec2 iVec2)
+    {
+        x = iVec2.x;
+        y = iVec2.y;
+        z = 0;
+    }
     public Vec3(@NotNull Vec3 vec3)
     {
-        this.x = vec3.x;
-        this.y = vec3.y;
-        this.z = vec3.z;
+        x = vec3.x;
+        y = vec3.y;
+        z = vec3.z;
     }
-
-    public Vec3(@NotNull Vec2 vec2, double value)
+    public Vec3(@NotNull IVec3 iVec3)
     {
-        this.x = vec2.x;
-        this.y = vec2.y;
-        this.z = value;
+        x = iVec3.x;
+        y = iVec3.y;
+        z = iVec3.z;
     }
-
     public Vec3(@NotNull Vec4 vec4)
     {
-        this.x = vec4.x;
-        this.y = vec4.y;
-        this.z = vec4.z;
+        x = vec4.x;
+        y = vec4.y;
+        z = vec4.z;
     }
-    public Vec2 getXY()
+    public Vec3(@NotNull IVec4 iVec4)
     {
-        return new Vec2(x, y);
+        x = iVec4.x;
+        y = iVec4.y;
+        z = iVec4.z;
     }
+    @Override
     public @NotNull String toString()
     {
-        return "(" + x + "|" + y + "|" + z +")";
+        return "(" + x + "|" + y + "|" + z + ")";
     }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -52,180 +63,135 @@ public class Vec3 implements Vector<Vec3>
 
         Vec3 other = (Vec3) obj;
 
-        return this.x == other.x &&
-            this.y == other.y &&
-            this.z == other.z;
+        return x == other.x &&
+                y == other.y &&
+                z == other.z;
     }
-
     @Override
     public int hashCode()
     {
         return Objects.hash(x, y, z);
     }
-
-    public float getDistance(@NotNull Vec3 pos)
+    public double getDistance(@NotNull Vec3 vec3)
     {
-        double deltaX = pos.x - x;
-        double deltaY = pos.y - y;
-        double deltaZ = pos.z - z;
-
-        return (float) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
+        double deltaX = vec3.x - x;
+        double deltaY = vec3.y - y;
+        double deltaZ = vec3.z - z;
+        return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
     }
-
-    public @NotNull Vec3 add(@NotNull Vec3 vec)
+    public double getDistance(@NotNull IVec3 iVec3)
     {
-        double resX = this.x + vec.x;
-        double resY = this.y + vec.y;
-        double resZ = this.z + vec.z;
-        return new Vec3(resX, resY, resZ);
+        double deltaX = iVec3.x - x;
+        double deltaY = iVec3.y - y;
+        double deltaZ = iVec3.z - z;
+        return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
     }
-
-    public @NotNull Vec3 sub(@NotNull Vec3 vec)
+    public Vec3 add(@NotNull Vec3 vec3)
     {
-       double resX =  this.x - vec.x;
-       double resY =  this.y - vec.y;
-       double resZ =  this.z - vec.z;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x + vec3.x, y + vec3.y, z + vec3.z);
     }
-
+    public Vec3 sub(@NotNull Vec3 vec3)
+    {
+		return new Vec3(x - vec3.x, y - vec3.y, z - vec3.z);
+    }
+    public Vec3 subr(@NotNull Vec3 vec3)
+    {
+		return new Vec3(vec3.x - x, vec3.y - y, vec3.z - z);
+    }
+    public Vec3 mult(@NotNull Vec3 vec3)
+    {
+		return new Vec3(x * vec3.x, y * vec3.y, z * vec3.z);
+    }
+    public Vec3 div(@NotNull Vec3 vec3)
+    {
+		return new Vec3(x / vec3.x, y / vec3.y, z / vec3.z);
+    }
+    public Vec3 divr(@NotNull Vec3 vec3)
+    {
+		return new Vec3(vec3.x / x, vec3.y / y, vec3.z / z);
+    }
+    public Vec3 add(@NotNull IVec3 iVec3)
+    {
+		return new Vec3(x + iVec3.x, y + iVec3.y, z + iVec3.z);
+    }
+    public Vec3 sub(@NotNull IVec3 iVec3)
+    {
+		return new Vec3(x - iVec3.x, y - iVec3.y, z - iVec3.z);
+    }
+    public Vec3 subr(@NotNull IVec3 iVec3)
+    {
+		return new Vec3(iVec3.x - x, iVec3.y - y, iVec3.z - z);
+    }
+    public Vec3 mult(@NotNull IVec3 iVec3)
+    {
+		return new Vec3(x * iVec3.x, y * iVec3.y, z * iVec3.z);
+    }
+    public Vec3 div(@NotNull IVec3 iVec3)
+    {
+		return new Vec3(x / iVec3.x, y / iVec3.y, z / iVec3.z);
+    }
+    public Vec3 divr(@NotNull IVec3 iVec3)
+    {
+		return new Vec3(iVec3.x / x, iVec3.y / y, iVec3.z / z);
+    }
     @Override
-    public @NotNull Vec3 subr(@NotNull Vec3 vec)
+    public Vec3 add(double value)
     {
-        double resX = vec.x - this.x;
-        double resY = vec.y - this.y;
-        double resZ = vec.z - this.z;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x + value, y + value, z + value);
     }
-
-    public @NotNull Vec3 mult(@NotNull Vec3 vec)
-    {
-        double resX = this.x * vec.x;
-        double resY = this.y * vec.y;
-        double resZ = this.z * vec.z;
-        return new Vec3(resX, resY, resZ);
-    }
-
-    public @NotNull Vec3 div(@NotNull Vec3 vec)
-    {
-        double resX = this.x / vec.x;
-        double resY = this.y / vec.y;
-        double resZ = this.z / vec.z;
-        return new Vec3(resX, resY, resZ);
-    }
-
-    public @NotNull Vec3 divr(@NotNull Vec3 vec)
-    {
-        double resX = vec.x / this.x;
-        double resY = vec.y / this.y;
-        double resZ = vec.z / this.z;
-        return new Vec3(resX, resY, resZ);
-    }
-
     @Override
-    public @NotNull Vec3 add(int value)
+    public Vec3 sub(double value)
     {
-        double resX = this.x + value;
-        double resY = this.y + value;
-        double resZ = this.z + value;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x - value, y - value, z - value);
     }
-
     @Override
-    public @NotNull Vec3 sub(int value)
+    public Vec3 subr(double value)
     {
-        double resX = this.x - value;
-        double resY = this.y - value;
-        double resZ = this.z - value;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(value - x, value - y, value - y);
     }
-
     @Override
-    public @NotNull Vec3 subr(int value)
+    public Vec3 mult(double value)
     {
-        double resX = value - this.x;
-        double resY = value - this.y;
-        double resZ = value - this.z;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x * value, y * value, z * value);
     }
-
     @Override
-    public @NotNull Vec3 mult(int value)
+    public Vec3 div(double value)
     {
-        double resX = this.x * value;
-        double resY = this.y * value;
-        double resZ = this.z * value;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x / value, y / value, z / value);
     }
-
     @Override
-    public @NotNull Vec3 div(int value)
+    public Vec3 divr(double value)
     {
-        double resX = this.x / value;
-        double resY = this.y / value;
-        double resZ = this.z / value;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(value / x, value / y, value / y);
     }
-
     @Override
-    public @NotNull Vec3 divr(int value)
+    public Vec3 add(int value)
     {
-        double resX = value / this.x;
-        double resY = value / this.y;
-        double resZ = value / this.z;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x + value, y + value, z + value);
     }
-
     @Override
-    public @NotNull Vec3 add(float value)
+    public Vec3 sub(int value)
     {
-        double resX = this.x + value;
-        double resY = this.y + value;
-        double resZ = this.z + value;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x - value, y - value, z - value);
     }
-
     @Override
-    public @NotNull Vec3 sub(float value)
+    public Vec3 subr(int value)
     {
-        double resX = this.x - value;
-        double resY = this.y - value;
-        double resZ = this.z - value;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(value - x, value - y, value - z);
     }
-
     @Override
-    public @NotNull Vec3 subr(float value)
+    public Vec3 mult(int value)
     {
-        double resX =  value - this.x;
-        double resY =  value - this.y;
-        double resZ = value - this.z;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x * value, y * value, z * value);
     }
-
     @Override
-    public @NotNull Vec3 mult(float value)
+    public Vec3 div(int value)
     {
-        double resX = this.x * value;
-        double resY = this.y * value;
-        double resZ = this.z * value;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(x / value, y / value, z / value);
     }
-
     @Override
-    public @NotNull Vec3 div(float value)
+    public Vec3 divr(int value)
     {
-        double resX = this.x / value;
-        double resY = this.y / value;
-        double resZ = this.z / value;
-        return new Vec3(resX, resY, resZ);
-    }
-
-    @Override
-    public @NotNull Vec3 divr(float value)
-    {
-        double resX = value / this.x;
-        double resY = value / this.y;
-        double resZ = value / this.z;
-        return new Vec3(resX, resY, resZ);
+		return new Vec3(value / x, value / y, value / z);
     }
 }
