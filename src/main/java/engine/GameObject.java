@@ -92,7 +92,6 @@ public class GameObject
     {
         Platform.runLater(() -> rootNode.getChildren().add(shape));
     }
-
     public void hide()
     {
         Platform.runLater(() -> rootNode.setVisible(false));
@@ -213,9 +212,12 @@ public class GameObject
     {
         return zIndex;
     }
-
     protected void queueAnimation(Animation animation)
     {
         Engine.animationHandler.queueAnimation(animation);
+    }
+    public void queueAnimations(@NotNull Animation... animations)
+    {
+        Engine.animationHandler.queueAnimations(animations);
     }
 }

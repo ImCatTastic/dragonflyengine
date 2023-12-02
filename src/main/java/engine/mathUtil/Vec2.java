@@ -12,6 +12,11 @@ public class Vec2 implements Vector<Vec2>
         this.x = x;
         this.y = y;
     }
+    public Vec2(double x)
+    {
+        this.x = x;
+    }
+    public Vec2() {}
     public Vec2(@NotNull Vec2 vec2)
     {
         x = vec2.x;
@@ -22,26 +27,24 @@ public class Vec2 implements Vector<Vec2>
         x = iVec2.x;
         y = iVec2.y;
     }
-    public Vec2(@NotNull Vec3 vec3)
+    //#region shortcuts
+    public Vec2 xx()
     {
-        x = vec3.x;
-        y = vec3.y;
+        return new Vec2(x, x);
     }
-    public Vec2(@NotNull IVec3 iVec3)
+    public Vec2 xy()
     {
-        x = iVec3.x;
-        y = iVec3.y;
+        return new Vec2(x, y);
     }
-    public Vec2(@NotNull Vec4 vec4)
+    public Vec2 yx()
     {
-        x = vec4.x;
-        y = vec4.y;
+        return new Vec2(y, x);
     }
-    public Vec2(@NotNull IVec4 iVec4)
+    public Vec2 yy()
     {
-        x = iVec4.x;
-        y = iVec4.y;
+        return new Vec2(y, y);
     }
+    //#endregion
     public @NotNull String toString()
     {
         return "(" + x + "|" + y + ")";

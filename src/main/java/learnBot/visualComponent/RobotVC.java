@@ -20,6 +20,7 @@ public class RobotVC extends VisualComponent
     private final static double DEFAULT_MOVEMENT_DURATION = 0.25d;
     private final static double DEFAULT_ROTATION_DURATION = 0.2d;
     private DoubleTransition teleportAnimation;
+    private DoubleTransition teleportRotationAnimation;
     private final DoubleTransition[] movementAnimations = new DoubleTransition[4];
     private DoubleTransition rotationAnimation;
     private final Rectangle body;
@@ -57,32 +58,27 @@ public class RobotVC extends VisualComponent
                 .setDuration(movementDuration)
                 .setPropertySetter(this::setY)
                 .setFrom(this::getWorldY)
-                .setBy(-offset);
-
-        var t = moveBuilder.build();;
+                .setDelta(-offset);
 
         movementAnimations[Direction.UP.ordinal()] = (DoubleTransition) moveBuilder.build();
+        movementAnimations[Direction.DOWN.ordinal()] = (DoubleTransition) moveBuilder.setDelta(offset).build();
+        moveBuilder.setPropertySetter(this::setX).setFrom(this::getWorldX);
+        movementAnimations[Direction.RIGHT.ordinal()] = (DoubleTransition) moveBuilder.setDelta(offset).build();
+        movementAnimations[Direction.LEFT.ordinal()] = (DoubleTransition) moveBuilder.setDelta(-offset).build();
 
-        //movementAnimations[Direction.DOWN.ordinal()] = (DoubleTransition) moveBuilder.setTo(offset).build();
-        //moveBuilder.setPropertySetter(this::setX).setFrom(this::getWorldX);
-        //movementAnimations[Direction.RIGHT.ordinal()] = (DoubleTransition) moveBuilder.setTo(offset).build();
-        //movementAnimations[Direction.LEFT.ordinal()] = (DoubleTransition) moveBuilder.setTo(-offset).build();
-
-
-        /*
-        teleportAnimation = (DoubleTransition) new DoubleTransition(this::setScale, teleportDuration, true)
+        teleportAnimation = (DoubleTransition) new DoubleTransition(this::setScale, teleportDuration, true, Interpolator.EASE_IN)
                 .setFrom(1d)
                 .setTo(0.01d)
-                .setInterpolator(Interpolator.EASE_IN)
                 .setOnComplete(Sync::giveSignal);
 
-        rotationAnimation = (DoubleTransition) new DoubleTransition(this::setRotation, rotationDuration)
+        teleportRotationAnimation = (DoubleTransition) new DoubleTransition(this::setRotation, teleportDuration * 2, false, Interpolator.EASE_IN_OUT)
+            .setFrom(this::getRotation)
+            .setDelta(720d);
+
+        rotationAnimation = (DoubleTransition) new DoubleTransition(this::setRotation, rotationDuration, getCustomInterpolator(speed))
                 .setFrom(this::getRotation)
-                .setBy(-90d)
-                .setInterpolator(getCustomInterpolator(speed))
+                .setDelta(-90d)
                 .setOnComplete(Sync::giveSignal);
-
-         */
     }
     public void playMove(@NotNull Direction direction)
     {
@@ -94,7 +90,7 @@ public class RobotVC extends VisualComponent
     }
     public void playTeleport(int x, int y)
     {
-        //queueAnimation(new Transition(getRotation(), getRotation() + 720, teleportDuration * 2, (t, val) -> setRotation(val), false).setInterpolator(Interpolator.EASE_IN_OUT));
-        queueAnimation(teleportAnimation.setOnHalfComplete(() -> setPosition(getOffsetX(x), getOffsetY(y))));
+        teleportAnimation.setOnHalfComplete(() -> setPosition(getOffsetX(x), getOffsetY(y)));
+        queueAnimations(teleportRotationAnimation, teleportAnimation);
     }
 }

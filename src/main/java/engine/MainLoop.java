@@ -9,17 +9,17 @@ import static engine.Engine.frameTime;
 
 public class MainLoop
 {
-    private CopyOnWriteArrayList<UpdateableGameObject> objects = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Updatable> updatableObjects = new CopyOnWriteArrayList<>();
     private boolean stopped = false;
     private boolean paused = false;
     private boolean running = false;
-    public void addObject(UpdateableGameObject object)
+    public void addObject(Updatable updatableObject)
     {
-        objects.add(object);
+        updatableObjects.add(updatableObject);
     }
-    public void removeObject(UpdateableGameObject object)
+    public void removeObject(Updatable updatableObject)
     {
-        objects.remove(object);
+        updatableObjects.remove(updatableObject);
     }
     public void start(@NotNull final GameManager manager, @NotNull final AnimationHandler animationHandler)
     {
@@ -48,8 +48,8 @@ public class MainLoop
                     if(!paused)
                     {
                         manager.onUpdate();
-                        for (UpdateableGameObject object : objects)
-                            object.update();
+                        for (Updatable updatableObject : updatableObjects)
+                            updatableObject.update();
                     }
 
                     lastTime = now;

@@ -1,5 +1,6 @@
 package engine.animation;
 
+import engine.util.Interpolator;
 import engine.util.PropertyGetter;
 import engine.util.PropertySetter;
 
@@ -9,15 +10,17 @@ import java.util.function.Function;
 public abstract class TransitionBuilder<T>
 {
     protected T fromValue;
-    protected T byValue;
+    protected T deltaValue;
     protected T toValue;
     protected PropertyGetter<T> dynamicFromValue;
-    protected PropertyGetter<T> dynamicByValue;
+    protected PropertyGetter<T> dynamicDeltaValue;
     protected PropertyGetter<T> dynamicToValue;
     protected PropertySetter<T> propertySetter;
     protected double duration;
     protected boolean reverse;
-    protected AnimationProperties properties = new AnimationProperties();
+    protected Interpolator interpolator;
+    protected Runnable onComplete;
+    protected Runnable onHalfComplete;
     public TransitionBuilder<T> setDuration(double duration)
     {
         this.duration = duration;
@@ -33,24 +36,19 @@ public abstract class TransitionBuilder<T>
         this.reverse = reverse;
         return this;
     }
-    public TransitionBuilder<T> setInterpolator(Function<java.lang.Double, java.lang.Double> interpolator)
+    public TransitionBuilder<T> setInterpolator(Interpolator interpolator)
     {
-        properties.interpolator = interpolator;
+        this.interpolator = interpolator;
         return this;
     }
     public TransitionBuilder<T> setOnComplete(Runnable onComplete)
     {
-        properties.onComplete = onComplete;
+        this.onComplete = onComplete;
         return this;
     }
     public TransitionBuilder<T> setOnHalfComplete(Runnable onHalfComplete)
     {
-        properties.onHalfComplete = onHalfComplete;
-        return this;
-    }
-    public TransitionBuilder<T> setProperties(AnimationProperties properties)
-    {
-        this.properties = new AnimationProperties(properties);
+        this.onHalfComplete = onHalfComplete;
         return this;
     }
     public TransitionBuilder<T> setFrom(T fromValue)
@@ -58,9 +56,9 @@ public abstract class TransitionBuilder<T>
         this.fromValue = fromValue;
         return this;
     }
-    public TransitionBuilder<T> setBy(T byValue)
+    public TransitionBuilder<T> setDelta(T byValue)
     {
-        this.byValue = byValue;
+        this.deltaValue = byValue;
         return this;
     }
     public TransitionBuilder<T> setTo(T toValue)
@@ -73,9 +71,9 @@ public abstract class TransitionBuilder<T>
         this.dynamicFromValue = fromValue;
         return this;
     }
-    public TransitionBuilder<T> setBy(PropertyGetter<T> byValue)
+    public TransitionBuilder<T> setDelta(PropertyGetter<T> byValue)
     {
-        this.dynamicByValue = byValue;
+        this.dynamicDeltaValue = byValue;
         return this;
     }
     public TransitionBuilder<T> setTo(PropertyGetter<T> toValue)
@@ -88,16 +86,16 @@ public abstract class TransitionBuilder<T>
     {
         public DoubleTransition build()
         {
-            DoubleTransition transition = new DoubleTransition(propertySetter, duration, reverse);
-
-            transition.setFrom(fromValue)
-                    .setBy(byValue)
+            return (DoubleTransition)
+                    new DoubleTransition(propertySetter, duration, reverse)
+                    .setFrom(fromValue)
+                    .setDelta(deltaValue)
                     .setTo(toValue)
                     .setFrom(dynamicFromValue)
-                    .setFrom(dynamicByValue)
-                    .setFrom(dynamicToValue);
-
-            return (DoubleTransition) transition.setProperties(properties);
+                    .setDelta(dynamicToValue)
+                    .setTo(dynamicDeltaValue)
+                    .setOnComplete(onComplete)
+                    .setOnHalfComplete(onComplete);
         }
     }
 }

@@ -14,17 +14,37 @@ public class IVec3 implements Vector<IVec3>
         this.y = y;
         this.z = z;
     }
+    public IVec3(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+    public IVec3(int x)
+    {
+        this.x = x;
+    }
+    public IVec3() {}
+    public IVec3(@NotNull IVec2 iVec2, int z)
+    {
+        x = iVec2.x;
+        y = iVec2.y;
+        this.z = z;
+    }
     public IVec3(@NotNull IVec2 iVec2)
     {
         x = iVec2.x;
         y = iVec2.y;
-        z = 0;
+    }
+    public IVec3(@NotNull Vec2 vec2, int z)
+    {
+        x = (int) vec2.x;
+        y = (int) vec2.y;
+        this.z = z;
     }
     public IVec3(@NotNull Vec2 vec2)
     {
         x = (int) vec2.x;
         y = (int) vec2.y;
-        z = 0;
     }
     public IVec3(@NotNull IVec3 iVec3)
     {
@@ -38,18 +58,152 @@ public class IVec3 implements Vector<IVec3>
         y = (int) vec3.y;
         z = (int) vec3.z;
     }
-    public IVec3(@NotNull IVec4 iVec4)
+    //#region shortcuts
+    public IVec2 xx()
     {
-        x = iVec4.x;
-        y = iVec4.y;
-        z = iVec4.z;
+        return new IVec2(x, x);
     }
-    public IVec3(@NotNull Vec4 vec4)
+    public IVec2 xy()
     {
-        x = (int) vec4.x;
-        y = (int) vec4.y;
-        z = (int) vec4.z;
+        return new IVec2(x, y);
     }
+    public IVec2 xz()
+    {
+        return new IVec2(x, z);
+    }
+    public IVec2 yx()
+    {
+        return new IVec2(y, x);
+    }
+    public IVec2 yy()
+    {
+        return new IVec2(y, y);
+    }
+    public IVec2 yz()
+    {
+        return new IVec2(y, z);
+    }
+    public IVec2 zx()
+    {
+        return new IVec2(z, x);
+    }
+    public IVec2 zy()
+    {
+        return new IVec2(z, y);
+    }
+    public IVec2 zz()
+    {
+        return new IVec2(z, z);
+    }
+    public IVec3 xxx()
+    {
+        return new IVec3(x, x, x);
+    }
+    public IVec3 xxy()
+    {
+        return new IVec3(x, x, y);
+    }
+    public IVec3 xxz()
+    {
+        return new IVec3(x, x, z);
+    }
+    public IVec3 xyx()
+    {
+        return new IVec3(x, y, x);
+    }
+    public IVec3 xyy()
+    {
+        return new IVec3(x, y, y);
+    }
+    public IVec3 xyz()
+    {
+        return new IVec3(x, y, z);
+    }
+    public IVec3 xzx()
+    {
+        return new IVec3(x, z, x);
+    }
+    public IVec3 xzy()
+    {
+        return new IVec3(x, z, y);
+    }
+    public IVec3 xzz()
+    {
+        return new IVec3(x, z, z);
+    }
+    public IVec3 yxx()
+    {
+        return new IVec3(y, x, x);
+    }
+    public IVec3 yxy()
+    {
+        return new IVec3(y, x, y);
+    }
+    public IVec3 yxz()
+    {
+        return new IVec3(y, x, z);
+    }
+    public IVec3 yyx()
+    {
+        return new IVec3(y, y, x);
+    }
+    public IVec3 yyy()
+    {
+        return new IVec3(y, y, y);
+    }
+    public IVec3 yyz()
+    {
+        return new IVec3(y, y, z);
+    }
+    public IVec3 yzx()
+    {
+        return new IVec3(y, z, x);
+    }
+    public IVec3 yzy()
+    {
+        return new IVec3(y, z, y);
+    }
+    public IVec3 yzz()
+    {
+        return new IVec3(y, z, z);
+    }
+    public IVec3 zxx()
+    {
+        return new IVec3(z, x, x);
+    }
+    public IVec3 zxy()
+    {
+        return new IVec3(z, x, y);
+    }
+    public IVec3 zxz()
+    {
+        return new IVec3(z, x, z);
+    }
+    public IVec3 zyx()
+    {
+        return new IVec3(z, y, x);
+    }
+    public IVec3 zyy()
+    {
+        return new IVec3(z, y, y);
+    }
+    public IVec3 zyz()
+    {
+        return new IVec3(z, y, z);
+    }
+    public IVec3 zzx()
+    {
+        return new IVec3(z, z, x);
+    }
+    public IVec3 zzy()
+    {
+        return new IVec3(z, z, y);
+    }
+    public IVec3 zzz()
+    {
+        return new IVec3(z, z, z);
+    }
+    //#endregion
     @Override
     public @NotNull String toString()
     {

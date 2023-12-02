@@ -1,48 +1,38 @@
 package engine.animation;
 
-import engine.Engine;
+import engine.util.Interpolator;
 import engine.util.PropertyGetter;
 import engine.util.PropertySetter;
 
-import java.util.function.Consumer;
-
 public abstract class Transition<T> extends Animation
 {
-    protected final static double DEFAULT_DURATION = 1;
-    protected T fromValue;
-    protected T byValue;
-    protected T toValue;
-    protected PropertyGetter<T> dynamicFromValue;
-    protected PropertyGetter<T> dynamicByValue;
-    protected PropertyGetter<T> dynamicToValue;
-    protected final PropertySetter<T> propertySetter;
-    protected T from;
-    protected T to;
-    private T[] table;
-    private boolean useLookUpTable;
-    public void enableLookUpTable()
+    private T fromValue;
+    private T deltaValue;
+    private T toValue;
+    private PropertyGetter<T> dynamicFromValue;
+    private PropertyGetter<T> dynamicDeltaValue;
+    private PropertyGetter<T> dynamicToValue;
+    private PropertySetter<T> propertySetter;
+    private T from;
+    private T delta;
+    protected Transition(PropertySetter<T> propertySetter, double duration, boolean reverse, Interpolator interpolator)
     {
-        useLookUpTable = true;
+        super(duration, reverse, interpolator);
+        this.propertySetter = propertySetter;
     }
-    protected abstract T[] createLookUpTable(int numFrames);
-    Transition(PropertySetter<T> propertySetter, double duration, boolean reverse)
+    protected Transition(PropertySetter<T> propertySetter, double duration, Interpolator interpolator)
+    {
+        super(duration, interpolator);
+        this.propertySetter = propertySetter;
+    }
+    protected Transition(PropertySetter<T> propertySetter, double duration, boolean reverse)
     {
         super(duration, reverse);
         this.propertySetter = propertySetter;
     }
-    Transition(PropertySetter<T> propertySetter, double duration)
+    protected Transition(PropertySetter<T> propertySetter, double duration)
     {
-        super(duration, false);
-        this.propertySetter = propertySetter;
-    }
-    Transition(PropertySetter<T> propertySetter, boolean reverse)
-    {
-        super(DEFAULT_DURATION, reverse);
-        this.propertySetter = propertySetter;
-    }
-    Transition(PropertySetter<T> propertySetter)
-    {
-        super(DEFAULT_DURATION, false);
+        super(duration);
         this.propertySetter = propertySetter;
     }
     @Override
@@ -50,37 +40,29 @@ public abstract class Transition<T> extends Animation
     {
         super.init();
 
-        if((fromValue == null && dynamicFromValue == null ) && (toValue == null  && dynamicToValue == null))
+        if ((fromValue == null && dynamicFromValue == null) && (toValue == null && dynamicToValue == null) ||
+            (fromValue == null && dynamicFromValue == null) && (deltaValue == null && dynamicDeltaValue == null) ||
+            (toValue == null && dynamicToValue == null) && (deltaValue == null && dynamicDeltaValue == null))
             throw new IllegalArgumentException("Not enough arguments provided for Transition.");
 
-        else if((fromValue == null || dynamicFromValue == null ) && (byValue == null  && dynamicByValue == null))
-            throw new IllegalArgumentException("Not enough arguments provided for Transition.");
+        from = dynamicFromValue != null ? dynamicFromValue.get() : fromValue;
+        T to = dynamicToValue != null ? dynamicToValue.get() : toValue;
+        delta = dynamicDeltaValue != null ? dynamicDeltaValue.get() : deltaValue;
 
-        else if((toValue == null || dynamicToValue == null ) && (byValue == null  && dynamicByValue == null))
-            throw new IllegalArgumentException("Not enough arguments provided for Transition.");
-
-        if(useLookUpTable)
-        {
-            table = createLookUpTable((int) Math.round(duration / Engine.targetUPS));
-        }
-
-        else
-        {
-            load();
-            from = dynamicFromValue == null ? fromValue == null ? dynamicByValue == null ? byValue : dynamicByValue.get() : fromValue : dynamicFromValue.get();
-            to = dynamicToValue == null ? toValue == null ? dynamicByValue == null ? byValue : dynamicByValue.get() : toValue : dynamicToValue.get();
-        }
+        delta = from != null && to != null ? sub(to, from) : deltaValue;
+        from = from == null ? sub(to, delta) : from;
     }
-    protected abstract void load();
-    protected abstract T calcFrame();
+    protected abstract T add(T first, T second);
+    protected abstract T sub(T first, T second);
+    protected abstract T calcFrame(T from, T delta, double normalizedProgress);
     public Transition<T> setFrom(T fromValue)
     {
         this.fromValue = fromValue;
         return this;
     }
-    public Transition<T> setBy(T byValue)
+    public Transition<T> setDelta(T deltaValue)
     {
-        this.byValue = byValue;
+        this.deltaValue = deltaValue;
         return this;
     }
     public Transition<T> setTo(T toValue)
@@ -93,9 +75,9 @@ public abstract class Transition<T> extends Animation
         this.dynamicFromValue = fromValue;
         return this;
     }
-    public Transition<T> setBy(PropertyGetter<T> byValue)
+    public Transition<T> setDelta(PropertyGetter<T> deltaValue)
     {
-        this.dynamicByValue = byValue;
+        this.dynamicDeltaValue = deltaValue;
         return this;
     }
     public Transition<T> setTo(PropertyGetter<T> toValue)
@@ -106,9 +88,6 @@ public abstract class Transition<T> extends Animation
     @Override
     protected final void onUpdate()
     {
-        if(useLookUpTable)
-            propertySetter.set(table[(int) (Engine.targetUPS * normalizedProgress)]);
-        else
-            propertySetter.set(calcFrame());
+        propertySetter.set(calcFrame(from, delta, normalizedProgress));
     }
 }

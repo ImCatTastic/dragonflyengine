@@ -1,49 +1,39 @@
 package engine.animation;
 
-import engine.Engine;
-import engine.util.PropertyGetter;
+import engine.util.Interpolator;
 import engine.util.PropertySetter;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class DoubleTransition extends Transition<Double>
 {
-    private double dx;
-    public DoubleTransition(PropertySetter<Double> setter, double duration, boolean reverse)
+    public DoubleTransition(PropertySetter<Double> propertySetter, double duration, boolean reverse, Interpolator interpolator)
     {
-        super(setter, duration, reverse);
+        super(propertySetter, duration, reverse, interpolator);
     }
-    public DoubleTransition(PropertySetter<Double> setter, double duration)
+    public DoubleTransition(PropertySetter<Double> propertySetter, double duration, Interpolator interpolator)
     {
-        super(setter, duration, false);
+        super(propertySetter, duration, interpolator);
     }
-    public DoubleTransition(PropertySetter<Double> setter, boolean reverse)
+    public DoubleTransition(PropertySetter<Double> propertySetter, double duration, boolean reverse)
     {
-        super(setter, Transition.DEFAULT_DURATION, reverse);
+        super(propertySetter, duration, reverse);
     }
-    public DoubleTransition(PropertySetter<Double> setter)
+    public DoubleTransition(PropertySetter<Double> propertySetter, double duration)
     {
-        super(setter, Transition.DEFAULT_DURATION, false);
-    }
-    @Override
-    protected Double[] createLookUpTable(int frames)
-    {
-        Double[] table = new Double[frames];
-
-        double reciprocalNum = 1 / Engine.targetUPS;
-        for (int i = 0; i < table.length; i++)
-            table[i] = dx * getInterpolator().apply(i * reciprocalNum);
-
-        return table;
-    }
-    protected void load()
-    {
-        dx = to - from;
+        super(propertySetter, duration);
     }
     @Override
-    protected Double calcFrame()
+    protected Double add(Double first, Double second)
     {
-        return from + dx * normalizedProgress;
+        return first + second;
+    }
+    @Override
+    protected Double sub(Double first, Double second)
+    {
+        return first - second;
+    }
+    @Override
+    protected Double calcFrame(Double from, Double delta, double normalizedProgress)
+    {
+        return from + delta * normalizedProgress;
     }
 }

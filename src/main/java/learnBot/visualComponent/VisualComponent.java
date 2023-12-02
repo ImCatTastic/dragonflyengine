@@ -1,6 +1,8 @@
 package learnBot.visualComponent;
 
-import engine.UpdateableGameObject;
+import engine.GameObject;
+import engine.Updatable;
+import engine.util.Interpolator;
 import learnBot.Config;
 import learnBot.FOPAnimation;
 import learnBot.World;
@@ -8,7 +10,7 @@ import learnBot.World;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
 
-public abstract class VisualComponent extends UpdateableGameObject
+public abstract class VisualComponent extends GameObject implements Updatable
 {
     private double xOffset;
     private double yOffset;
@@ -49,17 +51,16 @@ public abstract class VisualComponent extends UpdateableGameObject
     {
         animations.removeIf(FOPAnimation::update);
     }
-    protected Function<Double, Double> getCustomInterpolator(final double speed)
+    protected Interpolator getCustomInterpolator(final double speed)
     {
         double res = Math.max(0, Math.min(World.speedLimit, speed));
         double blendFactor = Math.exp(-0.2 * res);
 
         return (t) ->
         {
-            double linear = t;
             double easeInOut = 3 * t * t - 2 * t * t * t;
 
-            return linear + blendFactor * (easeInOut - linear);
+            return t + blendFactor * (easeInOut - t);
         };
     }
 }

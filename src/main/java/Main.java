@@ -1,11 +1,6 @@
 import engine.BoundingBox2D;
-import engine.Engine;
-import engine.animation.DoubleTransition;
-import engine.animation.VectorTransition;
 import engine.collider.BoxCollider2D;
 import engine.collider.Collider2D;
-import engine.mathUtil.Vec2;
-import engine.util.Time;
 import learnBot.Robot;
 import learnBot.World;
 
@@ -20,7 +15,7 @@ public class Main
     public static void entry()
     {
         Robot robot = new Robot(2,4);
-        robot.setSpeed(2);
+        robot.setSpeed(0.5);
 
         World.placeCoin(0, World.getHeight() - 1);
         World.placeBlock(World.getWidth() - 1, World.getHeight() - 1);
@@ -46,7 +41,7 @@ public class Main
                 if(!robot.isFrontClear())
                     robot.turnLeft();
 
-                robot.move();
+                //robot.move();
             }
         }
 

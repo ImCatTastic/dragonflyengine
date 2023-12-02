@@ -22,26 +22,29 @@ public class IVec2 implements Vector<IVec2>
         this.x = (int) vec2.x;
         this.y = (int) vec2.y;
     }
-    public IVec2(@NotNull IVec3 iVec3)
+    public IVec2(int x)
     {
-        this.x = iVec3.x;
-        this.y = iVec3.y;
+        this.x = x;
     }
-    public IVec2(@NotNull Vec3 vec3)
+    public IVec2() {}
+    //#region shortcuts
+    public IVec2 xx()
     {
-        this.x = (int) vec3.x;
-        this.y = (int) vec3.y;
+        return new IVec2(x, x);
     }
-    public IVec2(@NotNull IVec4 iVec4)
+    public IVec2 xy()
     {
-        this.x = iVec4.x;
-        this.y = iVec4.y;
+        return new IVec2(x, y);
     }
-    public IVec2(@NotNull Vec4 vec4)
+    public IVec2 yx()
     {
-        this.x = (int) vec4.x;
-        this.y = (int) vec4.y;
+        return new IVec2(y, x);
     }
+    public IVec2 yy()
+    {
+        return new IVec2(y, y);
+    }
+    //#endregion
     public @NotNull String toString()
     {
         return "(" + x + "|" + y + ")";

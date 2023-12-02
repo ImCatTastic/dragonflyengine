@@ -14,17 +14,37 @@ public class Vec3 implements Vector<Vec3>
         this.y = y;
         this.z = z;
     }
+    public Vec3(double x, double y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+    public Vec3(double x)
+    {
+        this.x = x;
+    }
+    public Vec3() {}
+    public Vec3(@NotNull Vec2 vec2, double z)
+    {
+        x = vec2.x;
+        y = vec2.y;
+        this.z = z;
+    }
     public Vec3(@NotNull Vec2 vec2)
     {
         x = vec2.x;
         y = vec2.y;
-        z = 0;
+    }
+    public Vec3(@NotNull IVec2 iVec2, double z)
+    {
+        x = iVec2.x;
+        y = iVec2.y;
+        this.z = z;
     }
     public Vec3(@NotNull IVec2 iVec2)
     {
         x = iVec2.x;
         y = iVec2.y;
-        z = 0;
     }
     public Vec3(@NotNull Vec3 vec3)
     {
@@ -38,18 +58,152 @@ public class Vec3 implements Vector<Vec3>
         y = iVec3.y;
         z = iVec3.z;
     }
-    public Vec3(@NotNull Vec4 vec4)
+    //#region shortcuts
+    public Vec2 xx()
     {
-        x = vec4.x;
-        y = vec4.y;
-        z = vec4.z;
+        return new Vec2(x, x);
     }
-    public Vec3(@NotNull IVec4 iVec4)
+    public Vec2 xy()
     {
-        x = iVec4.x;
-        y = iVec4.y;
-        z = iVec4.z;
+        return new Vec2(x, y);
     }
+    public Vec2 xz()
+    {
+        return new Vec2(x, z);
+    }
+    public Vec2 yx()
+    {
+        return new Vec2(y, x);
+    }
+    public Vec2 yy()
+    {
+        return new Vec2(y, y);
+    }
+    public Vec2 yz()
+    {
+        return new Vec2(y, z);
+    }
+    public Vec2 zx()
+    {
+        return new Vec2(z, x);
+    }
+    public Vec2 zy()
+    {
+        return new Vec2(z, y);
+    }
+    public Vec2 zz()
+    {
+        return new Vec2(z, z);
+    }
+    public Vec3 xxx()
+    {
+        return new Vec3(x, x, x);
+    }
+    public Vec3 xxy()
+    {
+        return new Vec3(x, x, y);
+    }
+    public Vec3 xxz()
+    {
+        return new Vec3(x, x, z);
+    }
+    public Vec3 xyx()
+    {
+        return new Vec3(x, y, x);
+    }
+    public Vec3 xyy()
+    {
+        return new Vec3(x, y, y);
+    }
+    public Vec3 xyz()
+    {
+        return new Vec3(x, y, z);
+    }
+    public Vec3 xzx()
+    {
+        return new Vec3(x, z, x);
+    }
+    public Vec3 xzy()
+    {
+        return new Vec3(x, z, y);
+    }
+    public Vec3 xzz()
+    {
+        return new Vec3(x, z, z);
+    }
+    public Vec3 yxx()
+    {
+        return new Vec3(y, x, x);
+    }
+    public Vec3 yxy()
+    {
+        return new Vec3(y, x, y);
+    }
+    public Vec3 yxz()
+    {
+        return new Vec3(y, x, z);
+    }
+    public Vec3 yyx()
+    {
+        return new Vec3(y, y, x);
+    }
+    public Vec3 yyy()
+    {
+        return new Vec3(y, y, y);
+    }
+    public Vec3 yyz()
+    {
+        return new Vec3(y, y, z);
+    }
+    public Vec3 yzx()
+    {
+        return new Vec3(y, z, x);
+    }
+    public Vec3 yzy()
+    {
+        return new Vec3(y, z, y);
+    }
+    public Vec3 yzz()
+    {
+        return new Vec3(y, z, z);
+    }
+    public Vec3 zxx()
+    {
+        return new Vec3(z, x, x);
+    }
+    public Vec3 zxy()
+    {
+        return new Vec3(z, x, y);
+    }
+    public Vec3 zxz()
+    {
+        return new Vec3(z, x, z);
+    }
+    public Vec3 zyx()
+    {
+        return new Vec3(z, y, x);
+    }
+    public Vec3 zyy()
+    {
+        return new Vec3(z, y, y);
+    }
+    public Vec3 zyz()
+    {
+        return new Vec3(z, y, z);
+    }
+    public Vec3 zzx()
+    {
+        return new Vec3(z, z, x);
+    }
+    public Vec3 zzy()
+    {
+        return new Vec3(z, z, y);
+    }
+    public Vec3 zzz()
+    {
+        return new Vec3(z, z, z);
+    }
+    //#endregion
     @Override
     public @NotNull String toString()
     {

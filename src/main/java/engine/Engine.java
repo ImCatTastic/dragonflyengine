@@ -1,7 +1,6 @@
 package engine;
 
 
-import engine.animation.Animation;
 import engine.util.Units;
 import javafx.application.Application;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -68,7 +67,7 @@ public class Engine
 
     protected static void registerGameObject(GameObject gameObject, Node rootNode)
     {
-        if(gameObject instanceof UpdateableGameObject ugo)
+        if(gameObject instanceof Updatable ugo)
             loop.addObject(ugo);
 
         Renderer.getInstance().addGameObject(gameObject, rootNode);

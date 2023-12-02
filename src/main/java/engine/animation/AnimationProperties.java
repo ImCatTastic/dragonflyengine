@@ -1,43 +1,38 @@
 package engine.animation;
 
+import engine.util.Interpolator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
 public class AnimationProperties
 {
-    private final static Function<Double, Double> DEFAULT_INTERPOLATOR = (t) -> t;
+    private static final Interpolator DEFAULT_INTERPOLATOR = (t) -> t;
+    public final double duration;
+    public final double halfDuration;
+    public final double reciprocalDuration;
+    public final int repeatCount;
+    public final boolean reverse;
+    public Interpolator interpolator = DEFAULT_INTERPOLATOR;
     public Runnable onComplete;
     public Runnable onHalfComplete;
-    public Function<Double, Double> interpolator;
-    public AnimationProperties(Runnable onComplete, Runnable onHalfComplete, @NotNull Function<Double, Double> interpolator)
+    public AnimationProperties(double duration, int repeatCount, boolean reverse)
     {
-        this.onComplete = onComplete;
-        this.onHalfComplete = onHalfComplete;
-        this.interpolator = interpolator;
+        this.duration = duration;
+        this.halfDuration = duration * 0.5;
+        this.reciprocalDuration = (1 / duration) * (reverse ? 2 : 1);
+        this.repeatCount = repeatCount;
+        this.reverse = reverse;
     }
-    public AnimationProperties(Runnable onComplete, Runnable onHalfComplete)
+    public AnimationProperties(@NotNull AnimationProperties properties) 
     {
-        this(onComplete, onHalfComplete, DEFAULT_INTERPOLATOR);
-    }
-    public AnimationProperties(Runnable onComplete, Function<Double, Double> interpolator)
-    {
-        this(onComplete, null, interpolator);
-    }
-    public AnimationProperties(Runnable onComplete)
-    {
-        this(onComplete, null, DEFAULT_INTERPOLATOR);
-    }
-    public AnimationProperties(Function<Double, Double> interpolator)
-    {
-        this(null, null, interpolator);
-    }
-    public AnimationProperties()
-    {
-        this(null, null, DEFAULT_INTERPOLATOR);
-    }
-    public AnimationProperties(@NotNull AnimationProperties properties)
-    {
-        this(properties.onComplete, properties.onHalfComplete, properties.interpolator);
+        duration = properties.duration;
+        halfDuration = properties.duration * 0.5;
+        reciprocalDuration = (1 / properties.duration) * (properties.reverse ? 2 : 1);
+        repeatCount = properties.repeatCount;
+        reverse = properties.reverse;
+        onComplete = properties.onComplete;
+        onHalfComplete = properties.onHalfComplete;
+        interpolator = properties.interpolator;
     }
 }

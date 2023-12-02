@@ -3,39 +3,50 @@ package engine.animation;
 import engine.util.Time;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
+import java.util.ArrayList;
 
 public abstract class Animation
 {
-    protected double progress = 0;
+    public static final int REPEAT_INDEFINITE = -1;
+    private double progress = 0;
     protected double normalizedProgress = 0;
-    protected final double duration;
-    protected final double halfDuration;
-    protected final double reciprocalDuration;
-    private AnimationProperties properties = new AnimationProperties();
-    private boolean locked = false;
+    private final AnimationProperties properties;
+    private boolean locked = false; //Prevent from modifying the animation while it is running
     private boolean halfCompletePlayed = false;
-    public Animation(final double duration, final boolean reverse)
+    public Animation(double duration, int repeatCount, boolean reverse)
     {
-        double factor = reverse ? 2 : 1;
-        this.duration = duration * factor;
-        this.halfDuration = this.duration * 0.5;
-        this.reciprocalDuration = (1 / this.duration) * factor;
+        this(new AnimationProperties(duration, repeatCount, reverse));
+    }
+    public Animation(double duration, boolean reverse)
+    {
+        this(new AnimationProperties(duration, 1, reverse));
+    }
+    public Animation(double duration, int repeatCount)
+    {
+        this(new AnimationProperties(duration, repeatCount, false));
+    }
+    public Animation(double duration)
+    {
+        this(new AnimationProperties(duration, 1, false));
+    }
+    protected Animation(@NotNull AnimationProperties properties)
+    {
+        this.properties = properties;
     }
     public boolean update()
     {
-        progress = Math.min(progress + Time.deltaTime, duration);
-        normalizedProgress = progress * reciprocalDuration;
+        progress = Math.min(progress + Time.deltaTime, properties.duration);
+        normalizedProgress = progress * properties.reciprocalDuration;
         normalizedProgress = properties.interpolator.apply(normalizedProgress > 1 ? 2 - normalizedProgress : normalizedProgress);
         onUpdate();
 
-        if(properties.onHalfComplete != null && !halfCompletePlayed && progress >= halfDuration)
+        if(properties.onHalfComplete != null && !halfCompletePlayed && progress >= properties.halfDuration)
         {
             halfCompletePlayed = true;
             properties.onHalfComplete.run();
         }
 
-        else if(progress == duration)
+        else if(progress == properties.duration)
         {
             if(properties.onComplete != null)
                 properties.onComplete.run();
@@ -44,7 +55,12 @@ public abstract class Animation
             return true;
         }
 
-        return false;
+        return shouldInterrupt;
+    }
+    private boolean shouldInterrupt = false;
+    void interrupt()
+    {
+        shouldInterrupt = true;
     }
     protected abstract void onUpdate();
     public void init()
@@ -53,17 +69,14 @@ public abstract class Animation
         locked = true;
         halfCompletePlayed = false;
     }
-    public Animation setInterpolator(Function<Double, Double> interpolator)
-    {
-        if(!locked)
-            properties.interpolator = interpolator;
 
-        return this;
-    }
-    protected Function<Double, Double> getInterpolator()
+    private final ArrayList<AnimationListener> listeners = new ArrayList<>();
+    public void addListener(AnimationListener listener)
     {
-        return properties.interpolator;
+        if(!listeners.contains(listener))
+            listeners.add(listener);
     }
+
     public Animation setOnComplete(Runnable onComplete)
     {
         if(!locked)
@@ -75,13 +88,6 @@ public abstract class Animation
     {
         if(!locked)
             properties.onHalfComplete = onHalfComplete;
-
-        return this;
-    }
-    public Animation setProperties(@NotNull AnimationProperties properties)
-    {
-        if(!locked)
-            this.properties = new AnimationProperties(properties);
 
         return this;
     }

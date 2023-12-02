@@ -2,9 +2,9 @@ package engine.animation;
 
 import engine.util.Interpolator;
 
-public class Timeline extends Animation
+public class SpriteAnimation extends Animation
 {
-    public Timeline(double duration, boolean reverse, Interpolator interpolator)
+    public SpriteAnimation(double duration, boolean reverse, Interpolator interpolator)
     {
         super(duration, reverse, interpolator);
     }
