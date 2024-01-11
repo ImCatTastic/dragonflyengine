@@ -1,10 +1,9 @@
 package learnBot;
 
-import learnBot.visualComponent.RobotVC;
+import learnBot.visuals.Config;
+import learnBot.visuals.RobotVC;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.stream.IntStream;
 

@@ -1,11 +1,12 @@
 package engine.animation;
 
+import engine.util.Interpolator;
 import engine.util.Time;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public abstract class Animation
+public abstract class Animation<T>
 {
     public static final int REPEAT_INDEFINITE = -1;
     private double progress = 0;
@@ -58,37 +59,47 @@ public abstract class Animation
         return shouldInterrupt;
     }
     private boolean shouldInterrupt = false;
-    void interrupt()
+    final void interrupt()
     {
         shouldInterrupt = true;
     }
     protected abstract void onUpdate();
-    public void init()
+    public final void init()
     {
         progress = 0;
         locked = true;
         halfCompletePlayed = false;
+        onInit();
     }
-
+    protected abstract void onInit();
     private final ArrayList<AnimationListener> listeners = new ArrayList<>();
-    public void addListener(AnimationListener listener)
+    public final void addListener(AnimationListener listener)
     {
         if(!listeners.contains(listener))
             listeners.add(listener);
     }
-
-    public Animation setOnComplete(Runnable onComplete)
+    @SuppressWarnings("unchecked")
+    public final T setOnComplete(Runnable onComplete)
     {
         if(!locked)
             properties.onComplete = onComplete;
 
-        return this;
+        return (T) this;
     }
-    public Animation setOnHalfComplete(Runnable onHalfComplete)
+    @SuppressWarnings("unchecked")
+    public final T setOnHalfComplete(Runnable onHalfComplete)
     {
         if(!locked)
             properties.onHalfComplete = onHalfComplete;
 
-        return this;
+        return (T) this;
+    }
+    @SuppressWarnings("unchecked")
+    public final T setInterpolator(Interpolator interpolator)
+    {
+        if(!locked)
+            properties.interpolator = interpolator;
+
+        return (T) this;
     }
 }

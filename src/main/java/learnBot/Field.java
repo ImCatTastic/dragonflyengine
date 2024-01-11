@@ -2,8 +2,9 @@ package learnBot;
 
 
 import javafx.scene.paint.Color;
-import learnBot.visualComponent.BoardVC;
-import learnBot.visualComponent.FieldVC;
+import learnBot.visuals.BoardVC;
+import learnBot.visuals.Config;
+import learnBot.visuals.FieldVC;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,12 +27,11 @@ public class Field
     {
         this.x = x;
         this.y = y;
-    }
-    protected Field(int x, int y, @NotNull BoardVC board)
-    {
-        vc = new FieldVC(x + Config.BORDER_SIZE_FACTOR * (x + 1), y + Config.BORDER_SIZE_FACTOR * (y + 1));
+
+        //vc = new FieldVC(x + Config.BORDER_SIZE_FACTOR * (x + 1), y + Config.BORDER_SIZE_FACTOR * (y + 1));
+
         if(!Config.headlessModeEnabled())
-            board.addChild(vc);
+            vc = new FieldVC(x, y);
     }
     protected void addEntity(Entity entity)
     {

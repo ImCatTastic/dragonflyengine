@@ -1,6 +1,7 @@
 package learnBot;
 
-import learnBot.visualComponent.CoinVC;
+import learnBot.visuals.CoinVC;
+import learnBot.visuals.Config;
 
 class Coin extends Entity implements Collectible
 {

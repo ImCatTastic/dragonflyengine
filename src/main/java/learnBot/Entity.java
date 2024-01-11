@@ -1,13 +1,13 @@
 package learnBot;
 
-import learnBot.visualComponent.VisualComponent;
+import learnBot.visuals.FOPVisualComponent;
 
 public class Entity
 {
     protected int x;
     protected int y;
     protected Direction direction;
-    protected VisualComponent visualComponent;
+    protected FOPVisualComponent visualComponent;
     public Entity(int x, int y, Direction direction)
     {
         this.x = x;

@@ -1,38 +1,19 @@
 package engine.animation;
 
-import engine.util.Interpolator;
+import engine.util.PropertyGetter;
 import engine.util.PropertySetter;
+import org.jetbrains.annotations.NotNull;
 
-public class DoubleTransition extends Transition<Double>
+public final class DoubleTransition extends Transition<DoubleTransition, Double>
 {
-    public DoubleTransition(PropertySetter<Double> propertySetter, double duration, boolean reverse, Interpolator interpolator)
+    protected DoubleTransition(
+            PropertyGetter<Double> getFrom, PropertyGetter<Double> getDelta,
+            PropertySetter<Double> propertySetter, double duration, boolean reverse)
     {
-        super(propertySetter, duration, reverse, interpolator);
-    }
-    public DoubleTransition(PropertySetter<Double> propertySetter, double duration, Interpolator interpolator)
-    {
-        super(propertySetter, duration, interpolator);
-    }
-    public DoubleTransition(PropertySetter<Double> propertySetter, double duration, boolean reverse)
-    {
-        super(propertySetter, duration, reverse);
-    }
-    public DoubleTransition(PropertySetter<Double> propertySetter, double duration)
-    {
-        super(propertySetter, duration);
+        super(getFrom,getDelta, propertySetter, duration, reverse);
     }
     @Override
-    protected Double add(Double first, Double second)
-    {
-        return first + second;
-    }
-    @Override
-    protected Double sub(Double first, Double second)
-    {
-        return first - second;
-    }
-    @Override
-    protected Double calcFrame(Double from, Double delta, double normalizedProgress)
+    protected @NotNull Double calcFrame(@NotNull Double from, @NotNull Double delta, double normalizedProgress)
     {
         return from + delta * normalizedProgress;
     }

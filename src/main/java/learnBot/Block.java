@@ -1,6 +1,7 @@
 package learnBot;
 
-import learnBot.visualComponent.BlockVC;
+import learnBot.visuals.BlockVC;
+import learnBot.visuals.Config;
 
 class Block extends Entity implements Obstacle
 {

@@ -1,8 +1,10 @@
 package learnBot;
 
-import engine.Engine;
-import engine.GameManager;
-import learnBot.visualComponent.BoardVC;
+
+
+import learnBot.visuals.Config;
+import learnBot.visuals.FieldVC;
+import learnBot.visuals.WorldEngine;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -11,67 +13,40 @@ import java.util.Properties;
 
 public class World
 {
-    private static int width;
-    private static int height;
-    public static double speed = 1;
-    public final static double speedLimit = 10;
-    private static Field[][] fields;
+    private static WorldEngine engine;
+    private static World instance;
+    private final Field[][] fields;
+    private final int width;
+    private final int height;
+    private World(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
 
+        fields = new Field[width][height];
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+                fields[x][y] = new Field(x, y);
+    }
     public static void createWorld(int width, int height, Runnable main)
     {
+        engine = WorldEngine.create(width, height, main);
+
+        if(true)
+            return;
+
+        if(instance != null)
+            return;
+
         Properties properties = loadConfig();
         Config.init(properties);
 
-        World.width = width;
-        World.height = height;
+        instance = new World(width, height);
 
         if(!Config.headlessModeEnabled())
-        {
-            Engine.width = width + Config.BORDER_SIZE_FACTOR * (width + 1) + Config.MARGIN * 2;
-            Engine.height = height + Config.BORDER_SIZE_FACTOR * (height + 1) + Config.MARGIN * 2;
-            Engine.unit = Config.UNIT;
-            Engine.start(new GameManager()
-            {
-                @Override
-                public void onStart()
-                {
-                    //Create new thread since fop runs as one continuous program and would block the loop
-                    new Thread(() ->
-                    {
-                        World.width = width;
-                        World.height = height;
-
-                        BoardVC boardVC =  new BoardVC(width, height, Config.BORDER_SIZE_FACTOR);
-
-                        for (Direction value : Direction.values())
-                            new Border(value);
-
-                        fields = new Field[width][height];
-                        for (int y = 0; y < height; y++)
-                            for (int x = 0; x < width; x++)
-                                fields[x][y] = new Field(x, y, boardVC);
-
-                        main.run();
-                    }).start();
-                }
-
-                @Override
-                public void onUpdate()
-                {
-
-                }
-            });
-        }
-
+            engine = WorldEngine.create(width, height, main);
         else
-        {
-            fields = new Field[width][height];
-            for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    fields[x][y] = new Field(x,y);
-
             main.run();
-        }
     }
 
     public static void placeCoin(int x, int y)
@@ -91,39 +66,33 @@ public class World
     {
         new Wall(x, y, horizontal);
     }
-
-
     protected static boolean positionInWorld(int x, int y)
     {
-        return x >= 0 && x < World.getWidth() &&
-               y >= 0 && y < World.getHeight();
+        return x >= 0 && x < instance.width &&
+               y >= 0 && y < instance.height;
     }
-
     public static Field getField(int x, int y)
     {
         if(!positionInWorld(x, y))
             throw new RuntimeException("");
 
-        return fields[x][y];
+        return instance.fields[x][y];
     }
-
-    protected static void registerEntity(Entity entity)
+    protected static void registerEntity(@NotNull Entity entity)
     {
-        fields[entity.getX()][entity.getY()].addEntity(entity);
+        instance.fields[entity.getX()][entity.getY()].addEntity(entity);
     }
-
     public static int getWidth()
     {
-        return width;
+        return instance.width;
     }
     public static int getHeight()
     {
-        return height;
+        return instance.height;
     }
-
     protected static Obstacle isObstacleBlockingField(int x, int y, Entity entity, boolean teleport)
     {
-        return fields[x][y].obstacleBlockingPath(entity, teleport);
+        return instance.fields[x][y].obstacleBlockingPath(entity, teleport);
     }
 
     private static @NotNull Properties loadConfig()

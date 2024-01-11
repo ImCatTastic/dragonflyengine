@@ -1,12 +1,7 @@
 package learnBot;
 
-import engine.GameObject;
-import engine.collider.BoxCollider2D;
-import engine.util.ShapeBuilder;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import learnBot.visualComponent.BlockVC;
-import learnBot.visualComponent.WallVC;
+import learnBot.visuals.Config;
+import learnBot.visuals.WallVC;
 
 class Wall extends Entity implements Obstacle
 {

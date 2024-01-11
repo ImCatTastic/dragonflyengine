@@ -18,9 +18,9 @@ public class AnimationProperties
     public Runnable onHalfComplete;
     public AnimationProperties(double duration, int repeatCount, boolean reverse)
     {
-        this.duration = duration;
-        this.halfDuration = duration * 0.5;
-        this.reciprocalDuration = (1 / duration) * (reverse ? 2 : 1);
+        this.duration = duration * (reverse ? 2 : 1);
+        this.halfDuration = this.duration * 0.5;
+        this.reciprocalDuration = (1 / duration);
         this.repeatCount = repeatCount;
         this.reverse = reverse;
     }
