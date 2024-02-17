@@ -18,9 +18,9 @@ public abstract class VisualComponent
     private Vec2 center;
     public final void render(GraphicsContext gc, @NotNull Scaler scaler)
     {
-        Vec2 p = scaler.apply(gameObject.getWorldCoords());
-        Vec2 d = scaler.apply(this.dimensions);
-        onRender(gc, p, d);
+        //Vec2 p = scaler.apply(gameObject.getWorldCoords());
+        //Vec2 d = scaler.apply(this.dimensions);
+        //onRender(gc, p, d);
     }
     public abstract void onRender(GraphicsContext gc, Vec2 position, Vec2 dimensions);
 }

@@ -34,9 +34,9 @@ public abstract class Animation<T>
     {
         this.properties = properties;
     }
-    public boolean update()
+    public boolean update(double deltaTime)
     {
-        progress = Math.min(progress + Time.deltaTime, properties.duration);
+        progress = Math.min(progress + deltaTime, properties.duration);
         normalizedProgress = progress * properties.reciprocalDuration;
         normalizedProgress = properties.interpolator.apply(normalizedProgress > 1 ? 2 - normalizedProgress : normalizedProgress);
         onUpdate();

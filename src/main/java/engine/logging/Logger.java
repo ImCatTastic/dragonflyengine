@@ -1,11 +1,9 @@
 package engine.logging;
 
-import engine.core.Engine;
-import engine.util.Identifier;
-import engine.util.Namespace;
+import engine.identification.Identifier;
+import engine.identification.LoggerIdentifier;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -17,7 +15,7 @@ public class Logger
     public Logger(LoggerIdentifier identifier)
     {
         this.identifier = identifier;
-        identifier.setHolder(this);
+        //identifier.bind(this);
         LogHandler.registerLogger(this);
     }
 

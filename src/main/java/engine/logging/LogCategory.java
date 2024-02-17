@@ -1,7 +1,7 @@
 package engine.logging;
 
-import engine.logging.ansi.LogTextAttribute;
-import engine.logging.ansi.LogBackgroundColor;
+import engine.logging.formatting.color.LogTextAttribute;
+import engine.logging.formatting.color.LogBackgroundColor;
 
 public enum LogCategory
 {

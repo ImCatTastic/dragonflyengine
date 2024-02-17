@@ -17,8 +17,12 @@ public class Vec2Transition extends Transition<Vec2Transition, Vec2>
     @Override
     protected @NotNull Vec2 calcFrame(@NotNull Vec2 from, @NotNull Vec2 delta, double normalizedProgress)
     {
+        /*
         result.x = from.x + delta.x * normalizedProgress;
         result.y = from.y + delta.y * normalizedProgress;
         return result;
+
+         */
+        return new Vec2();
     }
 }

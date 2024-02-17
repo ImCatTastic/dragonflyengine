@@ -26,7 +26,7 @@ public class Collider2D
     }
 
 
-    private final Vec2 position = new Vec2(0,0);
+    private Vec2 position = new Vec2(0,0);
     private final Shape shape;
 
     public Collider2D(Shape shape)
@@ -55,8 +55,7 @@ public class Collider2D
 
     public void updatePosition(Vec2 position)
     {
-        this.position.x = position.x;
-        this.position.y = position.y;
+        this.position = new Vec2(position);
     }
     protected Shape getShape()
     {

@@ -1,5 +1,7 @@
 package engine.logging;
 
+import engine.identification.LoggerIdentifier;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 

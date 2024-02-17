@@ -1,10 +1,9 @@
 package engine.core;
 
 import javafx.scene.input.KeyCode;
-import learnBot.eventHandlers.KeyListener;
-import learnBot.eventHandlers.MouseListener;
+import temp.learnBot.eventHandlers.KeyListener;
+import temp.learnBot.eventHandlers.MouseListener;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public abstract class GameManager
@@ -14,8 +13,9 @@ public abstract class GameManager
     {
         engine = Engine.getInstance();
         engine.setGameManager(this);
+        addScene(new Scene(0));
+        setActiveScene(0);
     }
-
     public void addMouseListener(MouseListener listener)
     {
         engine.getInputHandler().addMouseListener(listener);
@@ -24,62 +24,34 @@ public abstract class GameManager
     {
         engine.getInputHandler().addKeyListener(listener);
     }
-
-    public Set<KeyCode> getKeysPressed()
+    public Set<Key> getPressedKeys()
     {
         return null;
     }
-
-    public Set<MouseButton> getMouseButtonsPressed()
+    public Set<MouseButton> getPressedMouseButtons()
     {
         return null;
     }
-
-    protected Config getConfig()
+    public final void run()
     {
-        return new Config();
+        final Config config = new Config();
+        init(config);
+        engine.run(config.copy());
     }
-
-    protected final void setUnit(int unitSize)
-    {
-
-    }
-
-    protected final void setWidth(int width)
-    {
-
-    }
-
-    protected final void setHeight(int height)
-    {
-
-    }
-
-    protected final void setFullscreen(boolean enableFullscreen)
-    {
-
-    }
-
-    protected final void start()
-    {
-        engine.run(getConfig());
-    }
-
     protected final void addScene(Scene scene)
     {
         engine.getSceneManager().addScene(scene);
     }
-
-    protected final void setScene(int index)
+    protected final void setActiveScene(int index)
     {
-
+        engine.getSceneManager().setActiveScene(index);
     }
-
-    protected final Scene getScene()
+    protected final Scene getActiveScene()
     {
         return engine.getSceneManager().getActiveScene();
     }
 
+    protected abstract void init(Config config);
     protected abstract void onStart();
     protected abstract void onUpdate();
 }

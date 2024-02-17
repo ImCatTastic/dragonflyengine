@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 
 public class UICanvas extends GameObject
 {
-    public UICanvas(double x, double y, double width, double height)
+    public UICanvas(float x, float y, float width, double height)
     {
         super(x, y);
 
@@ -18,6 +18,6 @@ public class UICanvas extends GameObject
 
         pane.setLayoutX(x);
         pane.setLayoutY(y);
-        setUI(pane);
+        //setUI(pane);
     }
 }

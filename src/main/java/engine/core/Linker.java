@@ -8,7 +8,7 @@ class Linker
     private Linker() {}
 
     static Scene currentScene;
-    static Renderer renderer;
+    static Renderer2 renderer;
     static MainLoop loop;
 
 

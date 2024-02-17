@@ -26,10 +26,10 @@ public class BoxCollider2D extends Collider2D
     public BoundingBox2D getBoundingBox()
     {
         return new BoundingBox2D(
-            getX() + boundingBox.x1,
-            getY() + boundingBox.y1,
-            getX() + boundingBox.x2,
-            getY() + boundingBox.y2
+            getX() + boundingBox.getX1(),
+            getY() + boundingBox.getY1(),
+            getX() + boundingBox.getY1(),
+            getY() + boundingBox.getY2()
         );
     }
 

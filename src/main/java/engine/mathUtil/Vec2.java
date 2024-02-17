@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public class Vec2 implements Vector<Vec2>
 {
-    public double x;
-    public double y;
+    public final double x;
+    public final double y;
     public Vec2(double x, double y)
     {
         this.x = x;
@@ -15,8 +15,13 @@ public class Vec2 implements Vector<Vec2>
     public Vec2(double x)
     {
         this.x = x;
+        this.y = 0;
     }
-    public Vec2() {}
+    public Vec2()
+    {
+        this.x = 0;
+        this.y = 0;
+    }
     public Vec2(@NotNull Vec2 vec2)
     {
         x = vec2.x;
@@ -77,6 +82,30 @@ public class Vec2 implements Vector<Vec2>
         double deltaX = pos.x - x;
         double deltaY = pos.y - y;
         return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+    }
+    public Vec2 add(double x, double y)
+    {
+        return new Vec2(this.x + x, this.y + y);
+    }
+    public Vec2 sub(double x, double y)
+    {
+        return new Vec2(this.x - x, this.y - y);
+    }
+    public Vec2 subr(double x, double y)
+    {
+        return new Vec2(x - this.x, y - this.y);
+    }
+    public Vec2 mult(double x, double y)
+    {
+        return new Vec2(this.x * x, this.y * y);
+    }
+    public Vec2 div(double x, double y)
+    {
+        return new Vec2(this.x / x, this.y / y);
+    }
+    public Vec2 divr(double x, double y)
+    {
+        return new Vec2(x / this.x, y / this.y);
     }
     public Vec2 add(@NotNull Vec2 vec2)
     {

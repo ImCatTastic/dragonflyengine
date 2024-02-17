@@ -1,7 +1,6 @@
 package engine.logging.formatting;
 
-import engine.logging.LogMessage;
-import engine.logging.ansi.TextFormat;
+import engine.logging.formatting.color.TextFormat;
 import engine.logging.formatting.truncation.Truncator;
 
 public class LogComponentData

@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
-public class NodeTree<T> implements Iterable<Integer>
+public class NodeTree<T> implements Iterable<T>
 {
     private final ArrayList<Node<T>> nodeCatalog = new ArrayList<>();
     private final Node<T> root;
     public NodeTree(Node<T> root)
     {
         this.root = root;
+        nodeCatalog.add(root);
     }
-
     public NodeTree(T rootElement)
     {
         this.root = new Node<>(rootElement);
+        nodeCatalog.add(root);
     }
-
     public Node<T> getByIndex(int i)
     {
         return nodeCatalog.get(i);
@@ -30,12 +30,12 @@ public class NodeTree<T> implements Iterable<Integer>
 
 
     @Override
-    public Iterator<Integer> iterator()
+    public Iterator<T> iterator()
     {
         return null;
     }
     @Override
-    public void forEach(Consumer<? super Integer> action)
+    public void forEach(Consumer<? super T> action)
     {
         Iterable.super.forEach(action);
     }

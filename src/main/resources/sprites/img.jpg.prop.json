@@ -1,0 +1,23 @@
+{
+    "loops":
+    [
+        {
+            "transition":  "interpolate",
+            "from": 0,
+            "to:": 10,
+            "priority": 0
+        }
+    ],
+    "events":
+    [
+        {
+            "priority" : 1,
+            "trigger": "key",
+            "values":
+            [
+                "W",
+                "w"
+            ]
+        }
+    ]
+}

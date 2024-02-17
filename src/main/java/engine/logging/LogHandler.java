@@ -1,9 +1,10 @@
 package engine.logging;
 
+import engine.identification.LoggerIdentifier;
 import engine.logging.formatting.DateFormatter;
 import engine.logging.formatting.LogFormatter;
 import engine.logging.formatting.TimeFormatter;
-import engine.util.Identifier;
+import engine.identification.Identifier;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -29,8 +30,8 @@ public final class LogHandler
         startDate = LocalTime.now();
     }
 
-    private static LogPriority minPriority = LogPriority.LOW;
-    private static LogMode logMode = LogMode.DEFAULT;
+    public static LogPriority minPriority = LogPriority.LOW;
+    public static LogMode logMode = LogMode.DEFAULT;
     public static boolean useAbsoluteTime = false;
     public static boolean timeEnabled = true;
     public static boolean dateEnabled = true;
@@ -41,21 +42,10 @@ public final class LogHandler
     private static LogFormatter logFormatter = new LogFormatter(DATE, TIME, NAMESPACE, PRIORITY, CATEGORY, MESSAGE);
     private static DateFormatter dateFormatter = new DateFormatter(YEAR, MONTH, DAY);
     private static TimeFormatter timeFormatter = new TimeFormatter(HOUR, MINUTE, SECOND, MILLISECOND);
-
-
-
     private final static ArrayList<LoggerIdentifier> whiteList = new ArrayList<>();
     private final static ArrayList<LoggerIdentifier> blackList = new ArrayList<>();
     private final static HashMap<Identifier, Logger> loggerRegistry = new HashMap<>();
     private final static ConcurrentLinkedDeque<LogMessage> queuedMessages = new ConcurrentLinkedDeque<>();
-    public static void setMinPriority(LogPriority minPriority)
-    {
-        LogHandler.minPriority = minPriority;
-    }
-    public static void setLogMode(LogMode logMode)
-    {
-        LogHandler.logMode = logMode;
-    }
     public static void setLogFormatter(LogFormatter formatter)
     {
         logFormatter = formatter;
@@ -104,8 +94,11 @@ public final class LogHandler
 
     public static LocalTime getPassedTime()
     {
-        Duration duration = Duration.between(startDate, LocalTime.now());
-        return LocalTime.of(0,0,0, 0).plus(duration);
+        var time = LocalTime.of(0,0,0, 0);
+        if(startDate == null)
+            return time;
+
+        return time.plus(Duration.between(startDate, LocalTime.now()));
     }
     public static void registerLogger(Logger logger)
     {

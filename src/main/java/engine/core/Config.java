@@ -1,22 +1,29 @@
 package engine.core;
 
+import engine.javafx.FitMode;
+import javafx.scene.paint.Color;
+
+
 public class Config
 {
+    public String windowTitle = "MyGame";
     public int unitSize = 10;
     public int windowWidth = 660;
     public int windowHeight = 660;
-    public boolean unitAsReference = false;
-    public boolean scaleMonitor = true;
+    public FitMode fitMode = FitMode.HEIGHT;
+    public Color windowBackgroundColor = Color.BLACK;
     public boolean startFullscreen = false;
+    public boolean enableResizing = true;
 
-    private Config copy(Config config)
+    public Config copy()
     {
         Config copy = new Config();
-        copy.windowWidth = config.windowWidth;
-        copy.windowHeight = config.windowHeight;
-        copy.unitAsReference = config.unitAsReference;
-        copy.scaleMonitor = config.scaleMonitor;
-        copy.startFullscreen = config.startFullscreen;
+        copy.windowTitle = windowTitle;
+        copy.unitSize = unitSize;
+        copy.windowWidth = windowWidth;
+        copy.windowHeight = windowHeight;
+        copy.windowBackgroundColor = windowBackgroundColor;
+        copy.startFullscreen = startFullscreen;
         return copy;
     }
 }

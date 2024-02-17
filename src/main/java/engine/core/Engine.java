@@ -1,6 +1,7 @@
 package engine.core;
 
 import engine.logging.LogHandler;
+import engine.rendering.Renderer;
 import javafx.application.Application;
 
 public final class Engine
@@ -11,24 +12,28 @@ public final class Engine
         return instance;
     }
     private Engine() {}
-
     private boolean running = false;
     private GameManager gameManager;
-    private Renderer renderer;
+    private Renderer2 renderer;
+    private final Renderer _renderer = new Renderer();
     private final SceneManager sceneManager = new SceneManager();
     private final MainLoop loop = new MainLoop();
     private final InputHandler inputHandler = new InputHandler();
-    private final AnimationHandler animationHandler = new AnimationHandler();
 
     public void run(Config config)
     {
         if(running)
             throw new RuntimeException("Cannot call run twice!");
 
+        _renderer.run(config, inputHandler);
+
+        if(true)
+            return;
+
         running = true;
         LogHandler.setStartDate();
-        Renderer.loadConfig(config);
-        Renderer.onLoadComplete(() ->
+        Renderer2.loadConfig(config);
+        Renderer2.onLoadComplete(() ->
         {
             new Thread(() ->
             {
@@ -44,10 +49,14 @@ public final class Engine
                 }
             }).start();
 
-
-            loop.start(gameManager, animationHandler);
+            loop.start(gameManager, null);
         });
-        Application.launch(Renderer.class);
+        Application.launch(Renderer2.class);
+    }
+
+    public void start()
+    {
+
     }
 
     public InputHandler getInputHandler()
@@ -67,8 +76,7 @@ public final class Engine
 
         this.gameManager = gameManager;
     }
-
-    public void setRenderer(Renderer renderer)
+    public void setRenderer(Renderer2 renderer)
     {
         if(this.renderer != null)
             throw new IllegalArgumentException("Renderer already set");

@@ -2,30 +2,36 @@ package engine.logging.formatting;
 
 import engine.logging.LogHandler;
 import engine.logging.LogMessage;
-import engine.logging.ansi.TextFormat;
+import engine.logging.formatting.color.TextFormat;
 import engine.util.formatter.ExtractableComponent;
 import engine.util.Tuple;
 
 import java.util.function.BiFunction;
 
-import static engine.logging.ansi.LogTextColor.*;
+import static engine.logging.formatting.color.LogTextColor.*;
 
 
 public enum LogComponent implements ExtractableComponent<Tuple<LogMessage, LogComponentData>>
 {
     MESSAGE(20, (message, format) -> new Tuple<>(message.content(), format)),
     PRIORITY(4, (message, format) ->
-            switch (message.priority())
-            {
-                case LOW -> new Tuple<>("LOW", format.withTextColor(GREEN_BRIGHT));
-                case MEDIUM -> new Tuple<>("MED", format.withTextColor(YELLOW_BRIGHT));
-                case HIGH -> new Tuple<>("HIGH", format.withTextColor(RED_BRIGHT));
-            }),
-    IDENTIFIER(12, (message, format) -> new Tuple<>(getOrEmpty(message.identifier().getName(), LogHandler.namespaceEnabled), format)),
-    NAMESPACE(12, (message, format) ->
     {
-        var str = getOrEmpty(message.identifier().getNamespace().getName(), LogHandler.namespaceEnabled);
-        return new Tuple<>(str, format.withTextColor(message.identifier().getNamespace().getColor()));
+        if(!LogHandler.priorityEnabled && message.priority().ordinal() < LogHandler.minPriority.ordinal())
+            return new Tuple<>("", format);
+
+        return switch (message.priority())
+        {
+            case LOW -> new Tuple<>("LOW", format.withTextColor(GREEN_BRIGHT));
+            case MEDIUM -> new Tuple<>("MED", format.withTextColor(YELLOW_BRIGHT));
+            case HIGH -> new Tuple<>("HIGH", format.withTextColor(RED_BRIGHT));
+        };
+    }),
+    IDENTIFIER(12, (message, format) -> new Tuple<>(getOrEmpty(message.identifier().getName(), LogHandler.namespaceEnabled), format)),
+    NAMESPACE(18, (message, format) ->
+    {
+        //var str = getOrEmpty(message.identifier().getNamespace().getName(), LogHandler.namespaceEnabled);
+        //return new Tuple<>(str, format.withTextColor(message.identifier().getNamespace().getColor()));
+        return null;
     }),
     STACKTRACE(24, (message, format) -> new Tuple<>(getOrEmpty(message.stackTraceElement().toString(), LogHandler.stackTraceEnabled), format)),
     DATE(9, (message, format) ->

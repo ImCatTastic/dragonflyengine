@@ -1,12 +1,10 @@
 package engine.core;
 
-import engine.logging.LogHandler;
 import engine.util.Time;
 import engine.util.Updatable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainLoop
 {
@@ -28,7 +26,7 @@ public class MainLoop
         //TODO: foreach updatdable object, collect
     }
 
-    public void start(@NotNull final GameManager manager, @NotNull final AnimationHandler animationHandler)
+    public void start(@NotNull final GameManager manager, @NotNull final AnimationManager animationHandler)
     {
         if(running)
             return;

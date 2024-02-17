@@ -1,8 +1,9 @@
 package engine.core;
 
 import javafx.scene.input.KeyCode;
-import learnBot.eventHandlers.KeyListener;
-import learnBot.eventHandlers.MouseListener;
+import temp.learnBot.eventHandlers.KeyListener;
+import temp.learnBot.eventHandlers.MouseListener;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,14 +24,28 @@ public class InputHandler
         keyListeners.add(listener);
     }
 
-    void triggerMouseEvent()
+    public void triggerMouseEvent(float x, float y)
     {
         for (MouseListener mouseListener : mouseListeners)
             System.out.println("Okay");
     }
-    void triggerKeyEvent()
+    public void triggerKeyEvent(int keyId, int actionId)
     {
-        for (KeyListener keyListener : keyListeners)
-            keyListener.onKeyPressed(null);
+        /*
+        Key key = Keys.getKey(keyId);
+
+        if(actionId == GLFW.GLFW_PRESS)
+            for (KeyListener keyListener : keyListeners)
+                keyListener.onKeyPressed(key);
+
+         else if(actionId == GLFW.GLFW_RELEASE)
+            for (KeyListener keyListener : keyListeners)
+                keyListener.onKeyReleased(key);
+
+        else if(actionId == GLFW.GLFW_REPEAT)
+            for (KeyListener keyListener : keyListeners)
+                keyListener.onKeyHold(key);
+
+         */
     }
 }
