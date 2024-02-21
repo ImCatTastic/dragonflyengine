@@ -1,6 +1,6 @@
 package temp.learnBot;
 
-import engine.mathUtil.IVec2;
+import engine.util.math.IVec2;
 import org.jetbrains.annotations.NotNull;
 
 public enum Direction

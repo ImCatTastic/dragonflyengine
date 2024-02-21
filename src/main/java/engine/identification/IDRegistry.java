@@ -6,9 +6,6 @@ public class IDRegistry
 {
     public static final IDRegistry SPRITE = new IDRegistry();
     public static final IDRegistry LOGGER = new IDRegistry();
-
-
-
     public static final IDRegistry GAMEOBJECT = new IDRegistry();
     public static final IDRegistry SCENE = new IDRegistry();
     private final HashSet<Identifier> identifiers = new HashSet<>();

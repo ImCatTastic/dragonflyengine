@@ -1,9 +1,9 @@
 package temp.learnBot.gameobjects;
 
-import engine.javafx.GameObject;
-import engine.javafx.ShapeRenderer;
-import engine.javafx.shapePainter.RectangleShape;
-import engine.mathUtil.Vec2;
+import engine.core.GameObject;
+import engine.rendering.ShapeRenderer;
+import engine.shapePainter.RectangleShape;
+import engine.util.math.Vec2;
 import javafx.scene.paint.Color;
 
 public class FieldGameObject extends GameObject

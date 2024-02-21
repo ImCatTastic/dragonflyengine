@@ -1,11 +1,8 @@
 package engine.animation;
 
-import engine.mathUtil.Vec2;
-import engine.mathUtil.Vec3;
-import engine.util.Interpolator;
+import engine.util.math.Vec3;
 import engine.util.PropertyGetter;
 import engine.util.PropertySetter;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class Vec3Transition extends Transition<Vec3Transition, Vec3>

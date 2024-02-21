@@ -1,7 +1,6 @@
 package temp.learnBot;
 
-import engine.javafx.Engine;
-import engine.javafx.GameManager;
+import engine.core.Engine;
 import temp.learnBot.entity.CoinEntity;
 import temp.learnBot.gameobjects.WorldConfig;
 import org.jetbrains.annotations.NotNull;

@@ -1,25 +1,40 @@
 package engine.core;
 
+import javafx.scene.layout.Pane;
+
 import java.util.ArrayList;
 
 public class SceneManager
 {
-    private Scene activeScene = null;
-    private final ArrayList<Scene> scenes = new ArrayList<>();
-
-    public void addScene(Scene scene)
+    private static GameScene activeScene;
+    private final static ArrayList<GameScene> scenes = new ArrayList<>();
+    private static Pane root;
+    static void init(Pane root)
     {
-        if(scenes.contains(scene))
-            throw new IllegalArgumentException("Scene already registered");
-
+        SceneManager.root = root;
+    }
+    static Pane addScene(GameScene scene)
+    {
         scenes.add(scene);
+        if(activeScene == null)
+            activeScene = scene;
+        return root;
     }
-    public void setActiveScene(int index)
-    {
-        this.activeScene = scenes.get(index);
-    }
-    public Scene getActiveScene()
+    public static GameScene getActiveScene()
     {
         return activeScene;
+    }
+    public static void setActiveScene(GameScene scene)
+    {
+        SceneManager.activeScene = scene;
+    }
+    public static void setActiveScene(int id)
+    {
+        //TODO: transition animations between scenes.
+        SceneManager.activeScene = getScene(id);
+    }
+    public static GameScene getScene(int id)
+    {
+        return scenes.get(id);
     }
 }

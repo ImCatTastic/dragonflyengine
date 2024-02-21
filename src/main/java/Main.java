@@ -1,11 +1,13 @@
-import engine.javafx.Screen;
+import engine.identification.Identifier;
+import engine.logging.Log;
+import engine.logging.LogPriority;
 import temp.learnBot.*;
 
 import java.io.*;
 
 public class Main
 {
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args)
     {
         World.create(10, 10, Main::entry);
     }
@@ -36,17 +38,26 @@ public class Main
         final Robot robot = new Robot(5,8, Direction.UP, 400);
         final Robot robot2 = new Robot(5,3, Direction.UP, 0);
         //final Robot robot3 = new Robot(7,3, Direction.RIGHT, 10);
-        robot.setSpeed(2);
+        robot.setSpeed(1);
         robot2.setSpeed(1);
         //robot3.setSpeed(5);
 
         FopConfig.sequentialScheduling = false;
 
+        Identifier log_id = new Identifier("LOG");
+        Log.debug(log_id, "hello world", LogPriority.LOW);
+
         int u = 0;
         while (u == 0)
         {
-            TasqueManager.submitIfAvailable(robot, () -> func(robot, false));
-            TasqueManager.submitIfAvailable(robot2, () -> func(robot2, true));
+            //TasqueManager.submitIfAvailable(robot, () -> func(robot, false));
+            //TasqueManager.submitIfAvailable(robot2, () -> func(robot2, true));
+
+            TasqueManager.submitIfAvailable(robot, () ->
+            {
+                robot.teleport((int) (Math.random() * 9), (int) (Math.random() * 9));
+            });
+
             ///TasqueManager.submitIfAvailable(robot3, () -> func(robot3, true));
         }
 

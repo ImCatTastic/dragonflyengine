@@ -1,14 +1,9 @@
 package temp.learnBot.gameobjects;
 
-import engine.javafx.GameObject;
-import engine.javafx.event.Updatable;
-import engine.mathUtil.Vec2;
+import engine.core.GameObject;
+import engine.util.math.Vec2;
 import engine.util.Interpolator;
-import temp.learnBot.FOPAnimation;
-import temp.learnBot.World;
 import temp.learnBot.WorldManager;
-
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 public abstract class FOPGameObject extends GameObject
 {

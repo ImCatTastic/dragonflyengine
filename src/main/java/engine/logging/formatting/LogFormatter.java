@@ -2,7 +2,7 @@ package engine.logging.formatting;
 
 import engine.logging.LogMessage;
 import engine.util.Tuple;
-import engine.util.formatter.Formatter;
+import engine.util.formatting.Formatter;
 
 import java.util.function.Function;
 

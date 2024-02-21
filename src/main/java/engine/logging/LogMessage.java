@@ -1,12 +1,12 @@
 package engine.logging;
 
-import engine.identification.LoggerIdentifier;
+import engine.identification.Identifier;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record LogMessage(
-        LoggerIdentifier identifier,
+        Identifier identifier,
         StackTraceElement stackTraceElement,
         String content,
         LogPriority priority,

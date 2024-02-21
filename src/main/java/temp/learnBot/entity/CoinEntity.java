@@ -1,7 +1,6 @@
 package temp.learnBot.entity;
 
-import engine.javafx.SceneManager;
-import engine.mathUtil.Vec2;
+import engine.util.math.Vec2;
 import javafx.application.Platform;
 import temp.learnBot.Direction;
 import temp.learnBot.Entity;
@@ -41,7 +40,10 @@ public class CoinEntity extends Entity<CoinGameobject>
             throw new IllegalArgumentException("This entity only accepts coin items.");
 
         coinCount++;
-        gameObject.updateCount(coinCount);
+
+        if(gameObject != null)
+            gameObject.updateCount(coinCount);
+
         super.addItem(item);
     }
     @Override

@@ -1,6 +1,5 @@
 package engine.animation;
 
-import engine.mathUtil.Vec2;
 import engine.util.Interpolator;
 import engine.util.PropertyGetter;
 import engine.util.PropertySetter;
@@ -193,38 +192,38 @@ public sealed abstract class TransitionBuilder<T, V> permits
             return first - second;
         }
     }
-    public final static class Vec2 extends TransitionBuilder<Vec2Transition, engine.mathUtil.Vec2>
+    public final static class Vec2 extends TransitionBuilder<Vec2Transition, engine.util.math.Vec2>
     {
-        public Vec2(@NotNull PropertySetter<engine.mathUtil.Vec2> propertySetter, double duration)
+        public Vec2(@NotNull PropertySetter<engine.util.math.Vec2> propertySetter, double duration)
         {
             setPropertySetter(propertySetter);
             setDuration(duration);
         }
-        public Vec2(@NotNull PropertySetter<engine.mathUtil.Vec2> propertySetter)
+        public Vec2(@NotNull PropertySetter<engine.util.math.Vec2> propertySetter)
         {
             setPropertySetter(propertySetter);
         }
         public Vec2() {}
         @Override
         protected @NotNull Vec2Transition getNewInstance(
-                @NotNull PropertyGetter<engine.mathUtil.Vec2> getFrom,
-                @NotNull PropertyGetter<engine.mathUtil.Vec2> getDelta)
+                @NotNull PropertyGetter<engine.util.math.Vec2> getFrom,
+                @NotNull PropertyGetter<engine.util.math.Vec2> getDelta)
         {
             return new Vec2Transition(getFrom,getDelta, getPropertySetter(), getDuration(), getReverse());
         }
 
         @Override
-        protected engine.mathUtil.Vec2 getImmutableCopy(engine.mathUtil.Vec2 reference) {
+        protected engine.util.math.Vec2 getImmutableCopy(engine.util.math.Vec2 reference) {
             return null;
         }
 
         @Override
-        protected @NotNull engine.mathUtil.Vec2 add(@NotNull engine.mathUtil.Vec2 first, @NotNull engine.mathUtil.Vec2 second)
+        protected @NotNull engine.util.math.Vec2 add(@NotNull engine.util.math.Vec2 first, @NotNull engine.util.math.Vec2 second)
         {
             return first.add(second);
         }
         @Override
-        protected @NotNull engine.mathUtil.Vec2 sub(@NotNull engine.mathUtil.Vec2 first, @NotNull engine.mathUtil.Vec2 second)
+        protected @NotNull engine.util.math.Vec2 sub(@NotNull engine.util.math.Vec2 first, @NotNull engine.util.math.Vec2 second)
         {
             return first.sub(second);
         }

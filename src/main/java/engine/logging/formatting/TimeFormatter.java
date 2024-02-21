@@ -1,8 +1,8 @@
 package engine.logging.formatting;
 
-import engine.util.formatter.ExtractableComponent;
-import engine.util.formatter.Formatter;
 import engine.util.Tuple;
+import engine.util.formatting.ExtractableComponent;
+import engine.util.formatting.Formatter;
 
 import java.time.LocalTime;
 import java.util.function.Function;

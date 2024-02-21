@@ -1,11 +1,8 @@
 package temp.learnBot.gameobjects;
 
-import engine.javafx.GameObject;
-import engine.javafx.ShapeRenderer;
-import engine.javafx.SpriteRenderer;
-import engine.mathUtil.Vec2;
-
-import static temp.learnBot.WorldManager.COIN_SPRITE_ID;
+import engine.core.GameObject;
+import engine.rendering.ShapeRenderer;
+import engine.util.math.Vec2;
 
 public class EntityCounter extends GameObject
 {

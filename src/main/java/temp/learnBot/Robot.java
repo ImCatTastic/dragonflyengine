@@ -1,6 +1,6 @@
 package temp.learnBot;
 
-import engine.mathUtil.Vec2;
+import engine.util.math.Vec2;
 import temp.learnBot.entity.CoinEntity;
 import temp.learnBot.gameobjects.RobotGameObject;
 import temp.learnBot.gameobjects.WorldConfig;
@@ -89,12 +89,7 @@ public class Robot extends Entity<RobotGameObject>
     {
         setX(x);
         setY(y);
-
-        if(!WorldConfig.headlessModeEnabled())
-        {
-            gameObject.playTeleport(x, y);
-            Sync.waitForSignal();
-        }
+        TasqueManager.scheduleTask(this, () -> gameObject.playTeleport(x, y));
     }
 
     public void turnLeft()

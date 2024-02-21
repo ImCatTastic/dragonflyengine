@@ -2,10 +2,10 @@ package temp.learnBot.gameobjects;
 
 import engine.animation.DoubleTransition;
 import engine.animation.TransitionBuilder;
-import engine.javafx.AnimationManager;
-import engine.javafx.AudioManager;
-import engine.javafx.ShapeRenderer;
-import engine.javafx.shapePainter.RectangleShape;
+import engine.animation.AnimationManager;
+import engine.audio.AudioManager;
+import engine.rendering.ShapeRenderer;
+import engine.shapePainter.RectangleShape;
 import engine.util.Interpolator;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
@@ -23,7 +23,6 @@ public class RobotGameObject extends FOPGameObject
     private DoubleTransition rotationAnimation;
     private final static double size = 0.85;
     private final Robot robot;
-    private boolean inAnimation = false;
     public RobotGameObject(Robot robot)
     {
         super(robot.getX(), robot.getY(), ZDistribution.ROBOT.get());
@@ -38,10 +37,6 @@ public class RobotGameObject extends FOPGameObject
         var shape = new RectangleShape(0, 0, size, size, Color.RED);
         renderer.addShape(shape);
         this.setCanvasRenderer(renderer);
-    }
-    public boolean isInAnimation()
-    {
-        return inAnimation;
     }
     public void setSpeed(double speed)
     {
@@ -88,25 +83,16 @@ public class RobotGameObject extends FOPGameObject
     }
     public void playMove(@NotNull Direction direction)
     {
-        Platform.runLater(() ->
-        {
-            inAnimation = true;
-            AnimationManager.queueAnimation(movementAnimations[direction.ordinal()]);
-        });
+        Platform.runLater(() -> AnimationManager.queueAnimation(movementAnimations[direction.ordinal()]));
     }
     public void playTurnLeft()
     {
-        Platform.runLater(() ->
-        {
-            inAnimation = true;
-            AnimationManager.queueAnimation(rotationAnimation);
-        });
+        Platform.runLater(() -> AnimationManager.queueAnimation(rotationAnimation));
     }
     public void playTeleport(int x, int y)
     {
         Platform.runLater(() ->
         {
-            inAnimation = true;
             teleportAnimation.setOnHalfComplete(() -> transform.setPosition(convertPoint(x, y)));
             AnimationManager.queueAnimations(teleportRotationAnimation, teleportAnimation);
         });

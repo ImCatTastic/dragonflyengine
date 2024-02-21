@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class DoubleTransition extends Transition<DoubleTransition, Double>
 {
-    protected DoubleTransition(
+    DoubleTransition(
             PropertyGetter<Double> getFrom, PropertyGetter<Double> getDelta,
             PropertySetter<Double> propertySetter, double duration, boolean reverse)
     {

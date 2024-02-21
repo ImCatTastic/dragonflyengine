@@ -1,86 +1,64 @@
 package engine.core;
 
-import engine.logging.LogHandler;
-import engine.rendering.Renderer;
+import engine.identification.Identifier;
+import engine.logging.Log;
+import engine.ui.Anchor;
+import engine.ui.shape.Rectangle2D;
+import engine.util.Config;
 import javafx.application.Application;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
-public final class Engine
+public class Engine extends Application
 {
-    private final static Engine instance = new Engine();
+    public final static Identifier LOG_ID = new Identifier("engine");
+    private static Engine instance;
+    private static GameManager gameManager;
+    public Engine()
+    {
+        instance = this;
+    }
     static Engine getInstance()
     {
         return instance;
     }
-    private Engine() {}
-    private boolean running = false;
-    private GameManager gameManager;
-    private Renderer2 renderer;
-    private final Renderer _renderer = new Renderer();
-    private final SceneManager sceneManager = new SceneManager();
-    private final MainLoop loop = new MainLoop();
-    private final InputHandler inputHandler = new InputHandler();
-
-    public void run(Config config)
+    public static GameManager getGameManager()
     {
-        if(running)
-            throw new RuntimeException("Cannot call run twice!");
-
-        _renderer.run(config, inputHandler);
-
-        if(true)
-            return;
-
-        running = true;
-        LogHandler.setStartDate();
-        Renderer2.loadConfig(config);
-        Renderer2.onLoadComplete(() ->
-        {
-            new Thread(() ->
-            {
-                while (true)
-                {
-                    LogHandler.update();
-
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }).start();
-
-            loop.start(gameManager, null);
-        });
-        Application.launch(Renderer2.class);
+        return gameManager;
     }
-
-    public void start()
+    private final Pane root = new Pane();
+    public static void run(GameManager gameManager)
     {
+        if(Engine.gameManager != null)
+            throw new IllegalStateException("cannot run engine again.");
 
+        Engine.gameManager = gameManager;
+        Application.launch(Engine.class);
     }
-
-    public InputHandler getInputHandler()
+    void addFXCanvas(Canvas canvas)
     {
-        return inputHandler;
+        root.getChildren().add(canvas);
     }
-
-    public SceneManager getSceneManager()
+    @Override
+    public void start(Stage stage)
     {
-        return sceneManager;
-    }
+        Log.info(LOG_ID, "Starting engine...");
 
-    public void setGameManager(GameManager gameManager)
-    {
-        if(this.gameManager != null)
-            throw new IllegalArgumentException("GameEngine already set");
+        Screen.init();
+        final var config = new Config();
+        gameManager.init(config);
+        SceneManager.init(root);
+        engine.core.Application.init(config.version);
+        ResourceManager.loadResources();
+        View.getPrimary().resize(config.windowWidth, config.windowHeight);
+        View.generateUsableViews();
 
-        this.gameManager = gameManager;
-    }
-    public void setRenderer(Renderer2 renderer)
-    {
-        if(this.renderer != null)
-            throw new IllegalArgumentException("Renderer already set");
+        Window.create(stage, root, config);
+        gameManager.start();
 
-        this.renderer = renderer;
+        Window.display();
+        GameLoop.start();
     }
 }

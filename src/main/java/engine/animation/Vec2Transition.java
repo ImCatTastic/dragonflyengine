@@ -1,6 +1,6 @@
 package engine.animation;
 
-import engine.mathUtil.Vec2;
+import engine.util.math.Vec2;
 import engine.util.PropertyGetter;
 import engine.util.PropertySetter;
 import org.jetbrains.annotations.NotNull;

@@ -1,10 +1,10 @@
 package engine.logging.formatting;
 
-import engine.logging.LogHandler;
+import engine.logging.Log;
 import engine.logging.LogMessage;
 import engine.logging.formatting.color.TextFormat;
-import engine.util.formatter.ExtractableComponent;
 import engine.util.Tuple;
+import engine.util.formatting.ExtractableComponent;
 
 import java.util.function.BiFunction;
 
@@ -16,7 +16,7 @@ public enum LogComponent implements ExtractableComponent<Tuple<LogMessage, LogCo
     MESSAGE(20, (message, format) -> new Tuple<>(message.content(), format)),
     PRIORITY(4, (message, format) ->
     {
-        if(!LogHandler.priorityEnabled && message.priority().ordinal() < LogHandler.minPriority.ordinal())
+        if(!Log.priorityEnabled && message.priority().ordinal() < Log.minPriority.ordinal())
             return new Tuple<>("", format);
 
         return switch (message.priority())
@@ -26,25 +26,19 @@ public enum LogComponent implements ExtractableComponent<Tuple<LogMessage, LogCo
             case HIGH -> new Tuple<>("HIGH", format.withTextColor(RED_BRIGHT));
         };
     }),
-    IDENTIFIER(12, (message, format) -> new Tuple<>(getOrEmpty(message.identifier().getName(), LogHandler.namespaceEnabled), format)),
-    NAMESPACE(18, (message, format) ->
-    {
-        //var str = getOrEmpty(message.identifier().getNamespace().getName(), LogHandler.namespaceEnabled);
-        //return new Tuple<>(str, format.withTextColor(message.identifier().getNamespace().getColor()));
-        return null;
-    }),
-    STACKTRACE(24, (message, format) -> new Tuple<>(getOrEmpty(message.stackTraceElement().toString(), LogHandler.stackTraceEnabled), format)),
+    IDENTIFIER(12, (message, format) -> new Tuple<>(getOrEmpty(message.identifier().getName(), Log.namespaceEnabled), format)),
+    STACKTRACE(24, (message, format) -> new Tuple<>(getOrEmpty(message.stackTraceElement().getClassName(), Log.stackTraceEnabled), format)),
     DATE(9, (message, format) ->
     {
-        var str = getOrEmpty(LogHandler.formatDate(message), LogHandler.dateEnabled);
+        var str = getOrEmpty(Log.formatDate(message), Log.dateEnabled);
         return new Tuple<>(str.substring(0, str.length() - 1), format);
     }),
     TIME(16, (message, format) ->
     {
-        var str = getOrEmpty(LogHandler.formatTime(message), LogHandler.timeEnabled);
+        var str = getOrEmpty(Log.formatTime(message), Log.timeEnabled);
         return new Tuple<>(str.substring(0, str.length() - 1), format);
     }),
-    CATEGORY(3, (message, format) -> new Tuple<>(getOrEmpty(message.category().toVisualString(), LogHandler.categoryEnabled), format));
+    CATEGORY(3, (message, format) -> new Tuple<>(getOrEmpty(message.category().toVisualString(), Log.categoryEnabled), format));
 
     private final int defaultLength;
     private final BiFunction<LogMessage, TextFormat, Tuple<String, TextFormat>> extractor;

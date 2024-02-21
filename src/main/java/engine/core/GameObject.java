@@ -1,143 +1,74 @@
 package engine.core;
 
-import engine.animation.Animation;
-import engine.geometry.Transform2D;
-import engine.physics.force.PhysicsComponent;
-import engine.rendering.Sprite;
-import engine.rendering.SpriteRenderer;
-import javafx.application.Platform;
-import javafx.scene.Group;
-import engine.physics.collision.Collider2D;
-import engine.mathUtil.Vec2;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Shape;
+import engine.identification.Identifier;
+import engine.rendering.CanvasRenderer;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
-import java.util.ArrayList;
-
+import java.util.*;
 
 public class GameObject
 {
-    private static int objectCount = 0;
-
-    public static final byte FLAG_HIERARCHY = 0b00000001;
-    public static final byte FLAG_TRANSFORM = 0b00000010;
-    public static final byte FLAG_COLLIDER  = 0b00000100;
-    public static final byte FLAG_RENDERER  = 0b00001000;
-    public static final byte FLAG_PHYSICS   = 0b00010000;
-    private byte dirtyFlags = 0b0;
-    public byte getDirtyFlags()
-    {
-        return dirtyFlags;
-    }
-
-
-
-
-
-
-
-    private final int id;
-    public int getId()
-    {
-        return id;
-    }
-    private GameObject parent;
-    private Scene hostScene;
+    private int layer = 0;
+    private final HashSet<Identifier> tags = new HashSet<>();
     protected final Transform2D transform;
-    private SpriteRenderer spriteRenderer;
-    private Collider2D collider;
-    private PhysicsComponent physicsComponent;
-    private final ArrayList<GameObject> children = new ArrayList<>();
-
-
-    protected void setParent(GameObject parent)
+    protected CanvasRenderer canvasRenderer;
+    GameObject(@NotNull GameScene scene)
     {
-        if (this.parent != null)
-            removeFromParent();
-
-        this.parent = parent;
-    }
-    protected void removeFromParent()
-    {
-        this.parent.removeChild(this);
-    }
-    protected void removeChild(GameObject object)
-    {
-        children.remove(object);
-    }
-    public GameObject addChild(@NotNull GameObject gameObject)
-    {
-        gameObject.setParent(this);
-        return gameObject;
-    }
-    protected void addCollider(Collider2D collider2D)
-    {
-        if(collider != null)
-            return;
-
-        this.collider = collider2D;
-        //collider.updatePosition(transform.getPosition());
-    }
-    public final void createSpriteRenderer(Sprite sprite)
-    {
-        if(spriteRenderer == null)
-        {
-            spriteRenderer = new SpriteRenderer(sprite, transform);
-            if(hostScene != null)
-                hostScene.addSpriteRenderer(spriteRenderer, transform.getzIndex());
-        }
-    }
-    public SpriteRenderer getSpriteRenderer()
-    {
-        return spriteRenderer;
-    }
-    public GameObject(float x, float y, int z, float rotation)
-    {
-        id = objectCount++;
-        transform = new Transform2D(z);
-        transform.setPosition(x, y);
-        transform.setRotation(rotation);
-    }
-    public GameObject(float x, float y, float rotation)
-    {
-        this.id = objectCount++;
-        transform = new Transform2D(0);
-        transform.setPosition(x, y);
-        transform.setRotation(rotation);
-    }
-    public GameObject(float x, float y)
-    {
-        this(x, y, 0);
+        this.transform = new Transform2D(this, scene);
     }
     public GameObject()
     {
-        this(0, 0, 0);
+        this.transform = new Transform2D(this);
+    }
+    public int getLayer()
+    {
+        return layer;
+    }
+    public CanvasRenderer getCanvasRenderer()
+    {
+        return canvasRenderer;
     }
     public Transform2D getTransform()
     {
         return transform;
     }
-    public Collider2D getCollider() {
-        return collider;
-    }
-    public boolean hasCollider()
+    public void setParent(GameObject gameObject)
     {
-        return collider != null;
+        transform.setParent(gameObject.getTransform());
     }
-    public void setHost(Scene hostScene)
+    public void setParent(Transform2D transform)
     {
-        if(hostScene == null)
-            this.hostScene = hostScene;
+        transform.setParent(transform);
     }
-    protected void queueAnimation(Animation<?> animation)
+    public void setCanvasRenderer(@NotNull CanvasRenderer canvasRenderer)
     {
-        //Engine.getInstance().animationHandler.queueAnimation(animation);
+        this.canvasRenderer = canvasRenderer;
     }
-    public void queueAnimations(@NotNull Animation<?>... animations)
+    public void destroy()
     {
-        //Engine.getInstance().animationHandler.queueAnimations(animations);
+        transform.setParent(null);
     }
+    public void addTag(Identifier tag)
+    {
+        tags.add(tag);
+    }
+    public void removeTag(Identifier tag)
+    {
+        tags.remove(tag);
+    }
+    public boolean containsTag(Identifier tag)
+    {
+        return tags.contains(tag);
+    }
+    public void setLayer(int layer)
+    {
+        this.layer = layer;
+    }
+    void performUpdate()
+    {
+        update();
+        transform.update();
+    }
+    protected void start() {}
+    protected void update() {}
 }

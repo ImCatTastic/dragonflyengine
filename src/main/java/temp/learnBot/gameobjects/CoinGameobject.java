@@ -1,32 +1,32 @@
 package temp.learnBot.gameobjects;
 
-import engine.javafx.*;
-import engine.javafx.shapePainter.TextShape;
-import engine.mathUtil.Vec2;
+import engine.core.GameObject;
+import engine.rendering.ShapeRenderer;
+import engine.rendering.SpriteRenderer;
+import engine.shapePainter.TextShape;
+import engine.util.PivotPoint;
+import engine.util.math.Vec2;
+import engine.util.math.Vec3;
 
 import static temp.learnBot.WorldManager.COIN_SPRITE_ID;
 
 public class CoinGameobject extends GameObject
 {
     private final TextShape textShape;
+    private final GameObject textHolder;
     public CoinGameobject(Vec2 position)
     {
-        //super(ZDistribution.COIN.get());
-        transform.setPosition(position);
-        transform.setScale(0.7);
+        transform.setPosition(new Vec3(position, 1));
+        setCanvasRenderer(new SpriteRenderer(COIN_SPRITE_ID, 0.7, 0.7));
 
-        var r = new SpriteRenderer(COIN_SPRITE_ID);
-        r.setPivotOrientation(Alignment.CENTER);
-        this.setCanvasRenderer(r);
-
-        var textRenderer = new ShapeRenderer(1, 1);
-        textShape = new TextShape("-", 28);
-        textShape.setAlignment(Alignment.BOTTOM_RIGHT);
-        textShape.setPosition(new Vec2(-0.15, -0.15));
+        var textRenderer = new ShapeRenderer(0.7, 0.7);
+        textShape = new TextShape("-", 0.4);
+        textShape.setAlignment(PivotPoint.BOTTOM_RIGHT);
+        textShape.setPosition(new Vec2(-0.075, -0.075));
         textRenderer.addShape(textShape);
-        textRenderer.setPivotOrientation(Alignment.CENTER);
+        textRenderer.setPivotPoint(PivotPoint.CENTER);
 
-        var textHolder = new GameObject();
+        textHolder = new GameObject();
         textHolder.setCanvasRenderer(textRenderer);
         textHolder.setParent(this);
     }
@@ -38,6 +38,6 @@ public class CoinGameobject extends GameObject
     @Override
     protected void update()
     {
-        transform.setRotation(transform.getRotation() + 1);
+        //transform.setRotation(transform.getRotation() + 1);
     }
 }

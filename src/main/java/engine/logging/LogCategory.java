@@ -1,7 +1,7 @@
 package engine.logging;
 
-import engine.logging.formatting.color.LogTextAttribute;
 import engine.logging.formatting.color.LogBackgroundColor;
+import engine.logging.formatting.color.LogTextAttribute;
 
 public enum LogCategory
 {
@@ -10,7 +10,6 @@ public enum LogCategory
     INFO('I', LogBackgroundColor.BLUE),
     ERROR('E', LogBackgroundColor.RED),
     FATAL('F', LogBackgroundColor.BLACK);
-
     private final char letter;
     private final LogBackgroundColor backgroundColor;
     LogCategory(char letter, LogBackgroundColor backgroundColor)
@@ -18,7 +17,6 @@ public enum LogCategory
         this.letter = letter;
         this.backgroundColor = backgroundColor;
     }
-
     @Override
     public String toString()
     {

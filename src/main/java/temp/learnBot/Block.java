@@ -1,7 +1,6 @@
 package temp.learnBot;
 
-import engine.javafx.GameObject;
-import engine.mathUtil.Vec2;
+import engine.util.math.Vec2;
 import temp.learnBot.gameobjects.BlockGameObject;
 import temp.learnBot.gameobjects.WorldConfig;
 

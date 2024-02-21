@@ -1,7 +1,6 @@
 package engine.animation;
 
 import engine.util.Interpolator;
-import engine.util.Time;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
