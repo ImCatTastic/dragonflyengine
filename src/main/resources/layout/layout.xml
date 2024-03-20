@@ -1,0 +1,31 @@
+<ff-root>
+    <canvas>
+        <rectangle>
+            <text
+                    anchor-vertical="left"
+                    anchor-horizontal="stretch"
+            >
+                Hello World
+            </text>
+        </rectangle>
+    </canvas>
+</ff-root>
+
+
+<root>
+    <styles>
+        <style name="container">
+            <fill vale=@red/>
+
+        </style>
+    </styles>
+
+    <canvas>
+        <rectangle>
+            <text
+                    style="anchor-vertical: stretch; anchor-horizontal: stretch; ">
+                Hello World
+            </text>
+        </rectangle>
+    </canvas>
+</root>

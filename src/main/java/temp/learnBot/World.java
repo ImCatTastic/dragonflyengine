@@ -1,14 +1,13 @@
 package temp.learnBot;
 
 import engine.core.Engine;
-import temp.learnBot.entity.CoinEntity;
-import temp.learnBot.gameobjects.WorldConfig;
 import org.jetbrains.annotations.NotNull;
 import temp.learnBot.item.CoinItem;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class World
 {
@@ -27,25 +26,43 @@ public class World
             for (int x = 0; x < width; x++)
                 fields[x][y] = new Field(x, y);
     }
+
+    private final List<Entity<?>> obstacles = new ArrayList<>();
+    public void gameOver()
+    {
+        for (Entity<?> obstacle : obstacles)
+        {
+            obstacle.gameOver();
+        }
+    }
+
+
     public static void create(int width, int height, Runnable main)
     {
         if(instance != null)
-            return;
-
-        Properties properties = loadConfig();
-        WorldConfig.init(properties);
+            throw new IllegalStateException("An instance of World already exists.");
 
         instance = new World(width, height);
-        worldManager = WorldManager.create(width, height, main);
-        Engine.run(worldManager);
 
-        //main.run();
+        Runnable runnable = () ->
+        {
+            for (int i = 0; i < width; i++)
+                new Wall(i, 0, Direction.DOWN);
+            for (int i = 0; i < width; i++)
+                new Wall(i, height - 1, Direction.UP);
+            for (int i = 0; i < height; i++)
+                new Wall(width - 1, i, Direction.RIGHT);
+            for (int i = 0; i < width; i++)
+                new Wall(0, i, Direction.LEFT);
 
-        if(true)
-            return;
+            main.run();
+        };
 
-        if(!WorldConfig.headlessModeEnabled())
-            worldManager = WorldManager.create(width, height, main);
+        if(UserConfig.enableGUI)
+        {
+            worldManager = WorldManager.create(width, height, runnable);
+            Engine.run(worldManager);
+        }
         else
             main.run();
     }
@@ -60,11 +77,11 @@ public class World
     }
     void placeCoin(int x, int y, CoinItem coinItem)
     {
-        if(fields[x][y].hasEntityOfType(CoinEntity.class))
-            fields[x][y].getEntitiesByType(CoinEntity.class).get(0).addItem(new CoinItem());
+        if(fields[x][y].hasEntityOfType(Coin.class))
+            fields[x][y].getEntitiesByType(Coin.class).get(0).addItem(new CoinItem());
 
         else
-            new CoinEntity(x, y, coinItem);
+            new Coin(x, y, coinItem);
     }
     public static void placeBlock(int x, int y)
     {
@@ -87,6 +104,12 @@ public class World
         return instance.fields[x][y];
     }
 
+    public List<Entity<?>> getAllEntities()
+    {
+        return Arrays.stream(fields)
+                     .flatMap(row -> Arrays.stream(row).flatMap(field -> field.getEntities().stream()))
+                     .collect(Collectors.toList());
+    }
     void transferEntity(Entity<?> entity, int x, int y)
     {
         if(!positionInWorld(x ,y)) //TODO: better error handling
@@ -95,15 +118,16 @@ public class World
         instance.fields[entity.x][entity.y].removeEntity(entity);
         instance.fields[x][y].addEntity(entity);
     }
-
     void addEntity(@NotNull Entity<?> entity)
     {
+        if(entity instanceof Obstacle obstacle)
+            obstacles.add(entity);
+
         var x = entity.getX();
         var y = entity.getY();
         confirmPosition(x, y);
         instance.fields[x][y].addEntity(entity);
     }
-
     void removeEntity(@NotNull Entity<?> entity)
     {
         instance.fields[entity.getX()][entity.getY()].removeEntity(entity);
@@ -127,23 +151,8 @@ public class World
     {
         return instance.height;
     }
-    protected static Obstacle isObstacleBlockingField(int x, int y, Entity entity, boolean teleport)
+    protected static Obstacle isObstacleBlockingField(int x, int y, Entity<?> entity, boolean teleport)
     {
         return instance.fields[x][y].obstacleBlockingPath(entity, teleport);
-    }
-
-    private static @NotNull Properties loadConfig()
-    {
-        Properties prop = new Properties();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        InputStream stream = loader.getResourceAsStream("config.properties");
-
-        try {
-            prop.load(stream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return prop;
     }
 }

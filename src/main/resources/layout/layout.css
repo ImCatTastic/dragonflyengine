@@ -1,0 +1,21 @@
+
+
+
+
+
+interface-top
+{
+    background-color: rgb(1, 255, 1);
+    border-color: rgb(0, 255, 255);
+
+    ff-horizontalAnchor: left;
+    ff-verticalAnchor: right;
+    ff-corner-radius: 25;
+
+    ff-layout: grid;
+}
+
+
+
+
+

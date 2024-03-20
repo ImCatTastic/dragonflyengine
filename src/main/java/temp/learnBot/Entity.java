@@ -2,7 +2,6 @@ package temp.learnBot;
 
 import engine.core.GameObject;
 import engine.util.math.Vec2;
-import temp.learnBot.gameobjects.WorldConfig;
 import temp.learnBot.item.Item;
 
 import java.util.HashMap;
@@ -19,14 +18,28 @@ public abstract class Entity<T extends GameObject>
     protected int y;
     protected Direction direction;
     protected final T gameObject;
-    public Entity(int x, int y, Direction direction)
+    public Entity(int x, int y, Direction direction, T gameObject)
+    {
+        this.x = x;
+        this.y = y;
+        this.direction = direction;
+        this.gameObject = gameObject;
+
+        if(gameObject != null)
+        {
+            WorldManager.getInstance().addObject(gameObject);
+        }
+        World.getInstance().addEntity(this);
+        TasqueManager.register(this);
+    }
+    public Entity(int x, int y, Direction direction, boolean createGameObject)
     {
         this.x = x;
         this.y = y;
         this.direction = direction;
 
         World.getInstance().addEntity(this);
-        if(!FopConfig.enableGUI)
+        if(UserConfig.enableGUI && createGameObject)
         {
             this.gameObject = createGameObject(WorldManager.getInstance().convertCoords(x, y));
             WorldManager.getInstance().addObject(gameObject);
@@ -34,6 +47,10 @@ public abstract class Entity<T extends GameObject>
         else gameObject = null;
 
         TasqueManager.register(this);
+    }
+    public Entity(int x, int y, Direction direction)
+    {
+        this(x, y, direction, true);
     }
     public Entity(Entity<T> entity)
     {
@@ -77,12 +94,15 @@ public abstract class Entity<T extends GameObject>
     {
         items.add(item);
     }
+    protected void gameOver()
+    {
 
+    }
     protected void destroy()
     {
         World.getInstance().removeEntity(this);
 
-        if(!WorldConfig.headlessModeEnabled())
+        if(UserConfig.enableGUI)
         {
             //TODO: remove object from rendered world
         }

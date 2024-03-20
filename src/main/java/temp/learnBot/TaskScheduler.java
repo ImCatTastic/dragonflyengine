@@ -1,7 +1,5 @@
 package temp.learnBot;
 
-import temp.learnBot.gameobjects.WorldConfig;
-
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,7 +12,7 @@ public class TaskScheduler
     private final LinkedList<Runnable> tasks = new LinkedList<>();
     public void schedule(Runnable task)
     {
-        if(WorldConfig.headlessModeEnabled())
+        if(!UserConfig.enableGUI)
             return;
 
         if(running.get())
@@ -25,7 +23,7 @@ public class TaskScheduler
 
         tasks.add(task);
 
-        if(FopConfig.sequentialScheduling)
+        if(UserConfig.sequentialScheduling)
             execute();
     }
     public void notifyCompletion() //NOTE: executed from other thread
@@ -34,7 +32,7 @@ public class TaskScheduler
         {
             running.set(false);
 
-            if(FopConfig.sequentialScheduling)
+            if(UserConfig.sequentialScheduling)
             {
                 synchronized (lock)
                 {
@@ -59,7 +57,7 @@ public class TaskScheduler
         running.set(true);
         tasks.removeFirst().run();
 
-        if(FopConfig.sequentialScheduling)
+        if(UserConfig.sequentialScheduling)
         {
             isReady = false;
             synchronized (lock)

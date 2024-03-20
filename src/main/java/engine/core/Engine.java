@@ -2,13 +2,10 @@ package engine.core;
 
 import engine.identification.Identifier;
 import engine.logging.Log;
-import engine.ui.Anchor;
-import engine.ui.shape.Rectangle2D;
 import engine.util.Config;
 import javafx.application.Application;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Engine extends Application

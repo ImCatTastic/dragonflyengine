@@ -1,37 +1,31 @@
 package temp.learnBot;
 
-import engine.core.GameObject;
 import engine.util.math.Vec2;
-import temp.learnBot.gameobjects.WorldConfig;
-import temp.learnBot.gameobjects.WallVC;
+import temp.learnBot.visual.WallGameObject;
 
-class Wall extends Entity implements Obstacle
+public class Wall extends Entity<WallGameObject> implements Obstacle
 {
-    public Wall(int x, int y, boolean horizontal)
+    private final boolean isCounterWall;
+    Wall(int x, int y, boolean horizontal)
     {
         super(x, y, horizontal ? Direction.UP : Direction.RIGHT);
-
-        int counterWallX = !horizontal && x + 1 < World.getWidth() - 1 ? x + 1 : 0;
-        int counterWallY = horizontal && y + 1 < World.getHeight() - 1 ? y + 1 : 0;
-
-        if(!WorldConfig.headlessModeEnabled())
-            new WallVC(x, y, horizontal ? Direction.UP : Direction.RIGHT);
-
-        new Wall(counterWallX, counterWallY, getDirection().getOpposite());
+        int counterWallX = !horizontal ? x + 1 : x;
+        int counterWallY = horizontal ? y + 1 : y;
+        new Wall(counterWallX, counterWallY, getDirection().getOpposite(), gameObject);
+        isCounterWall = false;
     }
-
-    private Wall(int x, int y, Direction direction)
+    Wall(int x, int y, Direction direction)
     {
-        super(x, y, direction);
+        super(x, y, direction, true);
+        isCounterWall = false;
     }
-
-    @Override
-    protected GameObject createGameObject(Vec2 position) {
-        return null;
+    private Wall(int x, int y, Direction direction, WallGameObject gameObject)
+    {
+        super(x, y, direction, gameObject);
+        isCounterWall = true;
     }
-
     @Override
-    public boolean isBlockingPath(Entity entity, boolean teleport)
+    public boolean isBlockingPath(Entity<?> entity, boolean teleport)
     {
         if(teleport)
             return false;
@@ -39,8 +33,34 @@ class Wall extends Entity implements Obstacle
         return entity.getDirection().ordinal() == (getDirection().ordinal() + 2) % Direction.values().length;
     }
     @Override
-    public void collide(Entity entity, double speed)
+    public void detect(Entity<?> entity)
+    {
+        if(gameObject == null)
+        {
+            int i = 0;
+        }
+
+        if(gameObject != null)
+        {
+            gameObject.playDetectedAnimation();
+        }
+    }
+    @Override
+    protected void gameOver()
+    {
+        if(gameObject != null && !isCounterWall)
+        {
+            gameObject.playGameOverAnimation();
+        }
+    }
+    @Override
+    public void collide(Entity<?> entity, double speed)
     {
 
+    }
+    @Override
+    protected WallGameObject createGameObject(Vec2 position)
+    {
+        return new WallGameObject(this);
     }
 }

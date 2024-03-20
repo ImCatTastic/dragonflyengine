@@ -56,6 +56,10 @@ public final class Transform2D implements Iterable<Transform2D>
 
         return position.z;
     }
+    public double getLocalZ()
+    {
+        return position.z;
+    }
     public Vec2 getScale()
     {
         return scale;
@@ -71,6 +75,10 @@ public final class Transform2D implements Iterable<Transform2D>
     public GameObject getGameObject()
     {
         return gameObject;
+    }
+    public Transform2D getParent()
+    {
+        return parent;
     }
     public boolean wasDirty()
     {
@@ -184,6 +192,19 @@ public final class Transform2D implements Iterable<Transform2D>
     public void setRotation(double rotation)
     {
         this.rotation = rotation;
+        markDirty();
+    }
+    public void modRotation(double value, ModOperation operation)
+    {
+        switch (operation)
+        {
+            case ADD -> this.rotation += value;
+            case SUBTRACT -> this.rotation -= value;
+            case MULTIPLY -> this.rotation *= value;
+            case DIVIDE -> this.rotation /= value;
+            case MODULO -> this.rotation %= value;
+        }
+
         markDirty();
     }
     public void update()

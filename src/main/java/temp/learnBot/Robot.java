@@ -1,9 +1,7 @@
 package temp.learnBot;
 
 import engine.util.math.Vec2;
-import temp.learnBot.entity.CoinEntity;
-import temp.learnBot.gameobjects.RobotGameObject;
-import temp.learnBot.gameobjects.WorldConfig;
+import temp.learnBot.visual.RobotGameObject;
 import org.jetbrains.annotations.NotNull;
 import temp.learnBot.item.CoinItem;
 
@@ -18,6 +16,11 @@ public class Robot extends Entity<RobotGameObject>
     private boolean off = false;
     private double speed = 1;
     private boolean printTrace;
+
+    //TODO: error when coins < 0, custom error message
+    //TODO: error when x < 0 or x > world.width
+    //TODO: error when y < 0 or y > world.height
+
     public Robot(int x, int y, Direction direction, int numberOfCoins, RobotFamily robotFamily)
     {
         super(x, y, direction);
@@ -28,6 +31,7 @@ public class Robot extends Entity<RobotGameObject>
         this.robotFamily = robotFamily;
         this.numberOfCoins = numberOfCoins;
         this.items.addAll(IntStream.range(0, numberOfCoins).mapToObj(i -> new CoinItem()).toList());
+        gameObject.createSprite();
     }
     public Robot(int x, int y)
     {
@@ -56,7 +60,7 @@ public class Robot extends Entity<RobotGameObject>
     {
         //TODO: clamp local speed
         this.speed = speed;
-        if(!WorldConfig.headlessModeEnabled())
+        if(UserConfig.enableGUI)
             gameObject.setSpeed(speed);
     }
 
@@ -65,8 +69,22 @@ public class Robot extends Entity<RobotGameObject>
         int nextX = getX() + getDirection().getDx();
         int nextY = getY() + getDirection().getDy();
 
-        return World.positionInWorld(nextX, nextY) &&
-               World.isObstacleBlockingField(nextX, nextY, this, false) == null;
+        var walls = World.getField(x, y).getEntitiesByType(Wall.class);
+        assert walls != null;
+        final Obstacle obstacle = !World.positionInWorld(nextX, nextY) ?
+                walls.stream().filter(wall -> wall.getDirection() == direction).findFirst().orElse(null) :
+                World.isObstacleBlockingField(nextX, nextY, this, false);
+
+        if(obstacle != null)
+        {
+            TasqueManager.scheduleTask(this, () ->
+            {
+                obstacle.detect(this);
+                TasqueManager.completeTask(this);
+            });
+        }
+
+        return obstacle == null;
     }
 
     public void move()
@@ -77,11 +95,13 @@ public class Robot extends Entity<RobotGameObject>
             setY(y + direction.getDy());
 
             TasqueManager.scheduleTask(this, () -> gameObject.playMove(direction));
+            gameObject.markDirection(direction);
         }
 
         else
         {
-            //TODO: Crash
+            World.getInstance().gameOver();
+            throw new RuntimeException("Robot crashed into wall!");
         }
     }
 
@@ -101,11 +121,11 @@ public class Robot extends Entity<RobotGameObject>
 
     public boolean isOnCoin()
     {
-        return World.getField(getX(), getY()).hasEntityOfType(CoinEntity.class);
+        return World.getField(getX(), getY()).hasEntityOfType(Coin.class);
     }
     public void collectCoin()
     {
-        CoinEntity coin = World.getField(getX(), getY()).getEntitiesByType(CoinEntity.class).get(0);
+        Coin coin = World.getField(getX(), getY()).getEntitiesByType(Coin.class).get(0);
         numberOfCoins++;
         items.add(coin.collectCoin());
         gameObject.playCollectCoin();
@@ -179,7 +199,7 @@ public class Robot extends Entity<RobotGameObject>
     }
     public boolean isOnAnotherRobot()
     {
-        return World.getField(x, y).getEntityCount(Robot.class) > 1;
+        return World.getField(x, y).getEntityCountByType(Robot.class) > 1;
     }
     public int getId()
     {

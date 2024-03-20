@@ -1,28 +1,41 @@
 package engine.rendering;
 
-import engine.shapePainter.PaintableShape;
+import engine.core.Transform2D;
+import engine.spriteBuilder.PaintableShape;
+import engine.spriteBuilder.SpriteBuilder;
 import engine.util.RenderData;
 import engine.util.math.Vec2;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
 
-public non-sealed class ShapeRenderer extends CanvasRenderer
+public non-sealed class ShapeRenderer extends RenderComponent
 {
-    private final ArrayList<PaintableShape> paintableShapes = new ArrayList<>();
-    public ShapeRenderer(double width, double height)
+    public ShapeRenderer(Transform2D transform)
     {
-        setDimensions(new Vec2(width, height));
+        super(transform);
     }
+    private boolean hasDimensions = false;
+    @Override
+    public void setDimensions(Vec2 dimensions)
+    {
+        super.setDimensions(dimensions);
+        hasDimensions = true;
+    }
+    private final ArrayList<PaintableShape> paintableShapes = new ArrayList<>();
     public void addShape(PaintableShape paintableShape)
     {
         paintableShapes.add(paintableShape);
+        if(!hasDimensions)
+        {
+            this.setDimensions(paintableShape.getBoundingBox().dimensions().div(SpriteBuilder.getModifier()));
+        }
     }
     @Override
-    public final void render(GraphicsContext gc, RenderData renderData)
+    public final void render(GraphicsContext gc, RenderData data)
     {
-        var d = dimensions.mult(renderData.unit);
+        var d = getBoundingBox().dimensions().mult(data.unit);
         for (PaintableShape paintableShape : paintableShapes)
-            paintableShape.draw(gc, renderData, d);
+            paintableShape.draw(gc, data, d);
     }
 }

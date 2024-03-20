@@ -1,7 +1,9 @@
 package engine.util.math;
 
+import com.sun.source.doctree.EscapeTree;
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Vec2 implements Vector<Vec2>
 {
@@ -214,5 +216,26 @@ public class Vec2 implements Vector<Vec2>
     public Vec2 divr(int value)
     {
 		return new Vec2(value / x, value / y);
+    }
+
+    private final static Pattern pattern1 = Pattern.compile("vec2\\s*\\(\\s*\\s*(\\d+)\\s*\\)");
+    public static Vec2 parse(String string)
+    {
+        var matcher1 = pattern1.matcher(string);
+        if(matcher1.matches())
+        {
+            double v = Double.parseDouble(matcher1.group(1));
+            return new Vec2(v, v);
+        }
+
+        var matcher2 = pattern1.matcher(string);
+        if(matcher2.matches())
+        {
+            double x = Double.parseDouble(matcher2.group(1));
+            double y = Double.parseDouble(matcher2.group(2));
+            return new Vec2(x, y);
+        }
+
+        throw new IllegalStateException("Failed to parse Vec2: " + string);
     }
 }

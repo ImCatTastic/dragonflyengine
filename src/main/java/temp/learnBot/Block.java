@@ -1,33 +1,43 @@
 package temp.learnBot;
 
 import engine.util.math.Vec2;
-import temp.learnBot.gameobjects.BlockGameObject;
-import temp.learnBot.gameobjects.WorldConfig;
+import temp.learnBot.visual.BlockGameObject;
 
-class Block extends Entity<BlockGameObject> implements Obstacle
+public class Block extends Entity<BlockGameObject> implements Obstacle
 {
-    public Block(int x, int y)
+    Block(int x, int y)
     {
         super(x, y, Direction.UP);
-
-        if(!WorldConfig.headlessModeEnabled())
-            new BlockGameObject(x, y);
     }
-
     @Override
-    public boolean isBlockingPath(Entity entity, boolean teleport)
+    public boolean isBlockingPath(Entity<?> entity, boolean teleport)
     {
         return true;
     }
     @Override
-    public void collide(Entity entity, double speed)
+    public void collide(Entity<?> entity, double speed)
     {
         //vc.playCrash();
     }
-
+    @Override
+    public void detect(Entity<?> entity)
+    {
+        if(gameObject != null)
+        {
+            gameObject.playDetectedAnimation();
+        }
+    }
+    @Override
+    protected void gameOver()
+    {
+        if(gameObject != null)
+        {
+            gameObject.playGameOverAnimation();
+        }
+    }
     @Override
     protected BlockGameObject createGameObject(Vec2 position)
     {
-        return new BlockGameObject(0, 0);
+        return new BlockGameObject(this);
     }
 }

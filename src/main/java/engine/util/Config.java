@@ -15,6 +15,9 @@ public class Config
     public boolean startFullscreen = false;
     public boolean enableResizing = true;
 
+    public double targetAspectRatio = 16d / 9;
+
+
     public Config copy()
     {
         Config copy = new Config();

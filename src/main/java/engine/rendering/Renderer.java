@@ -3,6 +3,7 @@ package engine.rendering;
 import engine.core.GameObject;
 import engine.core.SceneManager;
 import engine.core.View;
+import engine.ui.Units;
 import engine.util.RenderData;
 import engine.util.Tuple;
 import javafx.beans.property.*;
@@ -44,7 +45,7 @@ public class Renderer
             var renderer = t2d.getGameObject().getCanvasRenderer();
             if(renderer != null)
             {
-                heap.put(new Tuple<>(t2d.getPosition().z, insertionIndex++), t2d.getGameObject());
+                heap.put(new Tuple<>(t2d.getWorldZ(), insertionIndex++), t2d.getGameObject());
             }
         }
     }
@@ -61,7 +62,7 @@ public class Renderer
             var cam = view.getActiveCamera();
             var unit = cam.convertToUnit(view.getWidth(), view.getHeight(), view.getZoom());
 
-            scene.getUiCanvas().resize(unit);
+            Units.setWorldUnit(unit);
 
             gc.save();
             gc.clearRect(0,0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
@@ -82,7 +83,7 @@ public class Renderer
                     mvpMatrix.appendScale(renderer.isFlipX() ? -1 : 1, renderer.isFlipY() ? -1 : 1);
 
                 gc.setTransform(mvpMatrix);
-                var data = new RenderData(renderer.getDimensions(), renderer.getPivotPoint(), unit);
+                var data = new RenderData(renderer.getBoundingBox().dimensions(), renderer.getPivotPoint(), unit);
                 renderer.render(gc, data);
             }
             gc.restore();

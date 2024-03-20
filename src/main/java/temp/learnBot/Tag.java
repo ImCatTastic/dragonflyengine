@@ -18,7 +18,6 @@ public class Tag
             this.predicate = predicate;
         }
     }
-
     private final Type type;
     public final String name;
     private String value;

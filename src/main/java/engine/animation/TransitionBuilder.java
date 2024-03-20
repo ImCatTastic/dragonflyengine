@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 public sealed abstract class TransitionBuilder<T, V> permits
         TransitionBuilder.Double,
-        TransitionBuilder.Vec2
+        TransitionBuilder.Vec2,
+        TransitionBuilder.Vec3
 {
     private final static double DEFAULT_DURATION = 1d;
     public TransitionBuilder() {}
@@ -224,6 +225,43 @@ public sealed abstract class TransitionBuilder<T, V> permits
         }
         @Override
         protected @NotNull engine.util.math.Vec2 sub(@NotNull engine.util.math.Vec2 first, @NotNull engine.util.math.Vec2 second)
+        {
+            return first.sub(second);
+        }
+    }
+
+    public final static class Vec3 extends TransitionBuilder<Vec3Transition, engine.util.math.Vec3>
+    {
+        public Vec3(@NotNull PropertySetter<engine.util.math.Vec3> propertySetter, double duration)
+        {
+            setPropertySetter(propertySetter);
+            setDuration(duration);
+        }
+        public Vec3(@NotNull PropertySetter<engine.util.math.Vec3> propertySetter)
+        {
+            setPropertySetter(propertySetter);
+        }
+        public Vec3() {}
+        @Override
+        protected @NotNull Vec3Transition getNewInstance(
+                @NotNull PropertyGetter<engine.util.math.Vec3> getFrom,
+                @NotNull PropertyGetter<engine.util.math.Vec3> getDelta)
+        {
+            return new Vec3Transition(getFrom,getDelta, getPropertySetter(), getDuration(), getReverse());
+        }
+
+        @Override
+        protected engine.util.math.Vec3 getImmutableCopy(engine.util.math.Vec3 reference) {
+            return null;
+        }
+
+        @Override
+        protected @NotNull engine.util.math.Vec3 add(@NotNull engine.util.math.Vec3 first, @NotNull engine.util.math.Vec3 second)
+        {
+            return first.add(second);
+        }
+        @Override
+        protected @NotNull engine.util.math.Vec3 sub(@NotNull engine.util.math.Vec3 first, @NotNull engine.util.math.Vec3 second)
         {
             return first.sub(second);
         }

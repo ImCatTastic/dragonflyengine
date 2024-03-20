@@ -2,8 +2,7 @@ import engine.identification.Identifier;
 import engine.logging.Log;
 import engine.logging.LogPriority;
 import temp.learnBot.*;
-
-import java.io.*;
+import temp.learnBot.tmp.*;
 
 public class Main
 {
@@ -12,87 +11,93 @@ public class Main
         World.create(10, 10, Main::entry);
     }
 
-    public static void func(Robot robot, boolean collect)
-    {
-        while(!robot.isFrontClear())
-        {
-            robot.turnLeft();
-        }
-
-        if(!collect)
-        {
-            if(robot.hasAnyCoins())
-                robot.placeCoin();
-        }
-
-        else if(robot.isOnCoin())
-        {
-            robot.collectCoin();
-        }
-
-        robot.move();
-    }
-
+    static Contaminant contaminant1;
+    static Contaminant contaminant2;
+    static boolean over = false;
     public static void entry()
     {
-        final Robot robot = new Robot(5,8, Direction.UP, 400);
-        final Robot robot2 = new Robot(5,3, Direction.UP, 0);
-        //final Robot robot3 = new Robot(7,3, Direction.RIGHT, 10);
-        robot.setSpeed(1);
-        robot2.setSpeed(1);
-        //robot3.setSpeed(5);
+        Temp.player = new PlayerRobot(0, 0, Direction.UP);
 
-        FopConfig.sequentialScheduling = false;
+        contaminant1 = new Contaminant1(World.getWidth() - 1, 0, Direction.UP, 400, RobotFamily.SQUARE_ORANGE);
+        contaminant2 = new Contaminant2(World.getWidth() - 1, World.getHeight() - 1, Direction.UP, 400, RobotFamily.SQUARE_AQUA);
 
-        Identifier log_id = new Identifier("LOG");
-        Log.debug(log_id, "hello world", LogPriority.LOW);
+        UserConfig.sequentialScheduling = false;
 
-        int u = 0;
-        while (u == 0)
+        contaminant2.setSpeed(0.8);
+        Temp.player.setSpeed(4);
+
+        //dentifier log_id = new Identifier("LOG");
+        //og.debug(log_id, "hello world");
+
+        MazeGenerator.generateMaze();
+
+        World.placeBlock(1,1);
+
+
+        while (!over)
         {
-            //TasqueManager.submitIfAvailable(robot, () -> func(robot, false));
-            //TasqueManager.submitIfAvailable(robot2, () -> func(robot2, true));
+            //TasqueManager.submitIfAvailable(contaminant1, contaminant1::doMove);
+            //TasqueManager.submitIfAvailable(contaminant2, contaminant2::doMove);
+            //checkWinCondition();
 
-            TasqueManager.submitIfAvailable(robot, () ->
+            try
             {
-                robot.teleport((int) (Math.random() * 9), (int) (Math.random() * 9));
-            });
+                Thread.sleep(1);
+            }
+            catch (InterruptedException e)
+            {
+                throw new RuntimeException(e);
+            }
 
             ///TasqueManager.submitIfAvailable(robot3, () -> func(robot3, true));
         }
+    }
 
-        if(true)
+    public static void checkWinCondition()
+    {
+        // <solution H3>
+        // If all Offenders are turned off, the game is won
+        if (contaminant1.isTurnedOff() && contaminant2.isTurnedOff()) {
+            System.out.println("Cleaning robot won!");
+            //stopGame();
+            over = true;
             return;
-
-        robot.setSpeed(10);
-
-        World.placeCoin(0, World.getHeight() - 1);
-        World.placeBlock(World.getWidth() - 1, World.getHeight() - 1);
-        World.placeWall(0,0, true);
-        World.placeWall(0,0, false);
-
-        final boolean teleport = false;
-
-        for (int i = 0; i < 1000; i++)
-        {
-            if(teleport)
-            {
-                int x = (int) (Math.random() * (World.getWidth()));
-                int y = (int) (Math.random() * (World.getHeight()));
-                robot.teleport(x,y);
-            }
-
-            else
-            {
-                if(robot.isOnCoin())
-                    robot.collectCoin();
-
-                if(!robot.isFrontClear())
-                    robot.turnLeft();
-
-                robot.move();
+        }
+        // if more than 50% of all fields are dirty, the game is lost
+        int dirtyFields = 0;
+        for (int x = 0; x < World.getWidth(); x++) {
+            for (int y = 0; y < World.getHeight(); y++) {
+                if (Utils.getCoinAmount(x, y) > 0) {
+                    dirtyFields++;
+                }
             }
         }
 
+        var coins = Utils.getCoinAmount(0, World.getHeight() - 1);
+        WorldManager.progressA = coins / 50d;
+
+        if (WorldManager.progressA >= 1)
+        {
+            contaminant1.turnOff();
+            contaminant2.turnOff();
+            System.out.println("Cleaning robot won!");
+            //stopGame();
+            WorldManager.displayWinner();
+            over = true;
+            return;
+        }
+
+        double progress = (double) dirtyFields / (World.getWidth() * World.getHeight());
+        WorldManager.progressB = progress * 2;
+
+        if (progress >= 0.5)
+        {
+            //getCleaningRobot().turnOff();
+            System.out.println("Contaminants won!");
+            WorldManager.displayLooser();
+            over = true;
+            //stopGame();
+        }
+        // </solution H3>
     }
 }

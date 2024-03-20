@@ -2,6 +2,7 @@ package engine.util.math;
 
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class IVec4 implements Vector<IVec4>
 {
@@ -16,39 +17,20 @@ public class IVec4 implements Vector<IVec4>
         this.z = z;
         this.w = w;
     }
-    public IVec4(int x, int y, int z)
+    public IVec4(int a)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.x = a;
+        this.y = a;
+        this.z = a;
+        this.w = a;
     }
-    public IVec4(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-    public IVec4(int x)
-    {
-        this.x = x;
-    }
-    public IVec4() {}
+    public IVec4() {this(0);}
     public IVec4(@NotNull Vec2 vec2, int z, int w)
     {
         x = (int) vec2.x;
         y = (int) vec2.y;
         this.z = z;
         this.w = w;
-    }
-    public IVec4(@NotNull Vec2 vec2, int z)
-    {
-        x = (int) vec2.x;
-        y = (int) vec2.y;
-        this.z = z;
-    }
-    public IVec4(@NotNull Vec2 vec2)
-    {
-        x = (int) vec2.x;
-        y = (int) vec2.y;
     }
     public IVec4(@NotNull IVec2 iVec2, int z, int w)
     {
@@ -57,17 +39,6 @@ public class IVec4 implements Vector<IVec4>
         this.z = z;
         this.w = w;
     }
-    public IVec4(@NotNull IVec2 iVec2, int z)
-    {
-        x = iVec2.x;
-        y = iVec2.y;
-        this.z = z;
-    }
-    public IVec4(@NotNull IVec2 iVec2)
-    {
-        x = iVec2.x;
-        y = iVec2.y;
-    }
     public IVec4(@NotNull Vec3 vec3, int w)
     {
         x = (int) vec3.x;
@@ -75,24 +46,12 @@ public class IVec4 implements Vector<IVec4>
         z = (int) vec3.z;
         this.w = w;
     }
-    public IVec4(@NotNull Vec3 vec3)
-    {
-        x = (int) vec3.x;
-        y = (int) vec3.y;
-        z = (int) vec3.z;
-    }
     public IVec4(@NotNull IVec3 iVec3, int w)
     {
         x = iVec3.x;
         y = iVec3.y;
         z = iVec3.z;
         this.w = w;
-    }
-    public IVec4(@NotNull IVec3 iVec3)
-    {
-        x = iVec3.x;
-        y = iVec3.y;
-        z = iVec3.z;
     }
     public IVec4(@NotNull Vec4 vec4)
     {
@@ -1457,7 +1416,7 @@ public class IVec4 implements Vector<IVec4>
     @Override
     public @NotNull String toString()
     {
-        return "(" + x + "|" + y + "|" + z + "|" + w +")";
+        return "ivec4(" + x + ", " + y + ", " + z + ", " + w +")";
     }
     @Override
     public boolean equals(Object obj)
@@ -1596,5 +1555,32 @@ public class IVec4 implements Vector<IVec4>
     public IVec4 divr(int value)
     {
         return new IVec4(value / x, value / y, value / z, value / w);
+    }
+
+    private final static Pattern pattern = Pattern.compile("ivec4\\s*(?:\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)|\\(\\s*(\\d+)\\s*\\))");
+    public static IVec4 parse(String input)
+    {
+        var matcher = pattern.matcher(input);
+
+        if(!matcher.matches())
+            throw new IllegalStateException("Failed to parse IVec4( No match ): " + input);
+
+        if(matcher.group().length() != input.length())
+            throw new IllegalStateException("Failed to parse IVec4( Character count mismatch ): " + input);
+
+        IVec4 out;
+        if(matcher.group(5) != null)
+            out = new IVec4(Integer.parseInt(matcher.group(5)));
+        else
+        {
+            out = new IVec4(
+                    Integer.parseInt(matcher.group(1)),
+                    Integer.parseInt(matcher.group(2)),
+                    Integer.parseInt(matcher.group(3)),
+                    Integer.parseInt(matcher.group(4))
+            );
+        }
+
+        return out;
     }
 }

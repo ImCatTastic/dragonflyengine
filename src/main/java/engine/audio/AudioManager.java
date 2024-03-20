@@ -22,9 +22,6 @@ public class AudioManager
         if (sfxRegistry.containsKey(soundID))
             throw new RuntimeException("ID already registered");
 
-        if(true)
-            return;
-
         Clip clip = createClip(soundID.getName());
         sfxRegistry.put(soundID, clip);
     }
@@ -36,9 +33,6 @@ public class AudioManager
     public static void play(Identifier soundID)
     {
         //soundEffect.play();
-
-        if(true)
-            return;
 
         Clip clip = sfxRegistry.get(soundID);
 
@@ -78,9 +72,6 @@ public class AudioManager
             {
                 throw new RuntimeException(e);
             }
-
-            if(true)
-                return null;
 
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
 

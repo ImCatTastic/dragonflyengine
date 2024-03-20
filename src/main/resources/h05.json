@@ -1,0 +1,34 @@
+{
+  "width": 10,
+  "height": 10,
+  "entities":
+  [
+    {
+      "robot":
+      {
+        "id": "0",
+        "family": "main",
+        "x" : 0,
+        "y" : 0,
+        "dir" : 0,
+        "trace":
+                [
+                  "turn",
+                  "move",
+                  "detect",
+                  "turn",
+                  "turn"
+                ]
+      }
+    },
+    {
+      "robot":
+      {
+        "name": "RoboBot",
+        "type": "AI",
+        "function": "Assistance",
+        "manufacturer": "TechCo"
+      }
+    }
+  ]
+}

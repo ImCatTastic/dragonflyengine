@@ -1,9 +1,25 @@
 package engine.rendering;
 
-public abstract non-sealed class CustomRenderer extends CanvasRenderer
+import engine.core.Transform2D;
+import engine.util.RenderData;
+import javafx.scene.canvas.GraphicsContext;
+
+import java.util.function.BiConsumer;
+
+public final class CustomRenderer extends RenderComponent
 {
-    public CustomRenderer(double width, double height)
+    public CustomRenderer(Transform2D transform)
     {
-        setDimensions(width, height);
+        super(transform);
+    }
+    private BiConsumer<GraphicsContext, RenderData> drawMethod = (gc, data) -> {};
+    public void setOnDraw(BiConsumer<GraphicsContext, RenderData> method)
+    {
+        drawMethod = method;
+    }
+    @Override
+    protected void render(GraphicsContext gc, RenderData renderData)
+    {
+        drawMethod.accept(gc, renderData);
     }
 }

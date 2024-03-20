@@ -1,7 +1,9 @@
 package engine.core;
 
 import engine.identification.Identifier;
-import engine.rendering.CanvasRenderer;
+import engine.rendering.*;
+import engine.util.RenderData;
+import javafx.scene.canvas.GraphicsContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -11,7 +13,7 @@ public class GameObject
     private int layer = 0;
     private final HashSet<Identifier> tags = new HashSet<>();
     protected final Transform2D transform;
-    protected CanvasRenderer canvasRenderer;
+    protected RenderComponent renderComponent;
     GameObject(@NotNull GameScene scene)
     {
         this.transform = new Transform2D(this, scene);
@@ -24,9 +26,9 @@ public class GameObject
     {
         return layer;
     }
-    public CanvasRenderer getCanvasRenderer()
+    public RenderComponent getCanvasRenderer()
     {
-        return canvasRenderer;
+        return renderComponent;
     }
     public Transform2D getTransform()
     {
@@ -36,14 +38,29 @@ public class GameObject
     {
         transform.setParent(gameObject.getTransform());
     }
-    public void setParent(Transform2D transform)
+    @SuppressWarnings("unchecked")
+    public <T extends RenderComponent> T createRenderComponent(Class<T> type)
     {
-        transform.setParent(transform);
+        if(renderComponent != null)
+            throw new IllegalStateException("GameObject already has a renderComponent.");
+
+        T component = null;
+        if(type.equals(SpriteRenderer.class))
+            component = (T) new SpriteRenderer(transform);
+        else if(type.equals(ShapeRenderer.class))
+            component =  (T) new ShapeRenderer(transform);
+        else if(type.equals(CustomRenderer.class))
+            component =  (T) new CustomRenderer(transform);
+        else if(type.equals(TextRenderer.class))
+            component =  (T) new TextRenderer(transform);
+
+        if(component == null)
+            throw new IllegalArgumentException("No component for class: " + type.getName());
+
+        renderComponent = component;
+        return component;
     }
-    public void setCanvasRenderer(@NotNull CanvasRenderer canvasRenderer)
-    {
-        this.canvasRenderer = canvasRenderer;
-    }
+
     public void destroy()
     {
         transform.setParent(null);

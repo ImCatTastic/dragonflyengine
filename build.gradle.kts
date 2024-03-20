@@ -1,7 +1,4 @@
 
-val lwjglVersion = "3.3.3"
-val lwjglNatives = "natives-linux"
-
 plugins {
     id("java")
     `java-library`
