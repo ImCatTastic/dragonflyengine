@@ -4,7 +4,7 @@ import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
-public class Padding
+public class Insets
 {
     public final DoubleProperty left = new SimpleDoubleProperty();
     public final DoubleProperty top = new SimpleDoubleProperty();

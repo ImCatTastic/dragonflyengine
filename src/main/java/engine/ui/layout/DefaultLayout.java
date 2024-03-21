@@ -1,11 +1,11 @@
 package engine.ui.layout;
 
 import engine.ui.UIBoundingBox;
-import engine.ui.util.Padding;
+import engine.ui.util.Insets;
 
 public class DefaultLayout extends UILayout
 {
-    public DefaultLayout(UIBoundingBox boundingBox, Padding padding)
+    public DefaultLayout(UIBoundingBox boundingBox, Insets padding)
     {
         super(boundingBox, padding);
     }

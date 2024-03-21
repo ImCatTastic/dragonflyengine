@@ -1,16 +1,14 @@
 package engine.ui.layout;
 
 import engine.ui.UIBoundingBox;
-import engine.ui.util.Padding;
-import engine.util.math.Vec4;
-import javafx.beans.property.ObjectProperty;
+import engine.ui.util.Insets;
 
 public abstract class UILayout
 {
     protected final UIBoundingBox paddedBoundingBox;
     protected final UIBoundingBox boundingBox;
-    protected final Padding padding;
-    public UILayout(UIBoundingBox boundingBox, Padding padding)
+    protected final Insets padding;
+    public UILayout(UIBoundingBox boundingBox, Insets padding)
     {
         this.boundingBox = boundingBox;
         this.padding = padding;

@@ -1,38 +1,51 @@
 package engine.ui;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberExpression;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleWrapper;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.binding.ObjectExpression;
+import javafx.beans.property.*;
 import org.jetbrains.annotations.NotNull;
 
 public class UIBoundingBox
 {
-    public final DoubleProperty minXProperty = new SimpleDoubleProperty(0);
-    public final DoubleProperty minYProperty = new SimpleDoubleProperty(0);
-    public final DoubleProperty maxXProperty = new SimpleDoubleProperty(0);
-    public final DoubleProperty maxYProperty = new SimpleDoubleProperty(0);
-    public final DoubleProperty widthProperty = new SimpleDoubleProperty(0);
-    public final DoubleProperty heightProperty = new SimpleDoubleProperty(0);
+    public final ObjectProperty<Double> minXProperty = new SimpleObjectProperty<>(null);
+    public final ObjectProperty<Double> minYProperty = new SimpleObjectProperty<>(null);
+    public final ObjectProperty<Double> maxXProperty = new SimpleObjectProperty<>(null);
+    public final ObjectProperty<Double> maxYProperty = new SimpleObjectProperty<>(null);
+    public final ObjectProperty<Double> widthProperty = new SimpleObjectProperty<>(null);
+    public final ObjectProperty<Double> heightProperty = new SimpleObjectProperty<>(null);
     public UIBoundingBox()
     {
-        maxXProperty.bind(minXProperty.add(widthProperty));
-        maxYProperty.bind(minYProperty.add(heightProperty));
+        maxXProperty.bind(Bindings.createObjectBinding(() ->
+        {
+            if(minXProperty.get() == null|| widthProperty.get() == null)
+                return null;
+
+            return minXProperty.get() + widthProperty.get();
+
+        }, minXProperty, widthProperty));
+
+        maxYProperty.bind(Bindings.createObjectBinding(() ->
+        {
+            if(minYProperty.get() == null|| heightProperty.get() == null)
+                return null;
+
+            return minYProperty.get() + heightProperty.get();
+        }, minYProperty, heightProperty));
     }
     public void reset()
     {
         minXProperty.unbind();
-        minXProperty.set(0);
+        minXProperty.set(0d);
 
         minYProperty.unbind();
-        minYProperty.set(0);
+        minYProperty.set(0d);
 
         widthProperty.unbind();
-        widthProperty.set(0);
+        widthProperty.set(0d);
 
         heightProperty.unbind();
-        heightProperty.set(0);
+        heightProperty.set(0d);
     }
     public void bind(@NotNull UIBoundingBox other)
     {
@@ -41,8 +54,8 @@ public class UIBoundingBox
         widthProperty.bind(other.widthProperty);
         heightProperty.bind(other.heightProperty);
     }
-    public void bind(@NotNull NumberExpression minXBinding, @NotNull NumberExpression minYBinding,
-                     @NotNull NumberExpression widthBinding, @NotNull NumberExpression heightBinding)
+    public void bind(@NotNull ObjectExpression<Double> minXBinding, @NotNull ObjectExpression<Double> minYBinding,
+                     @NotNull ObjectExpression<Double> widthBinding, @NotNull ObjectExpression<Double> heightBinding)
     {
         minXProperty.bind(minXBinding);
         minYProperty.bind(minYBinding);

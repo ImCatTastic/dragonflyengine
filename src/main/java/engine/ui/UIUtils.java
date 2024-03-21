@@ -1,16 +1,15 @@
 package engine.ui;
 
 import engine.core.Window;
-import engine.ui.Unit;
-import engine.ui.Units;
+import engine.ui.util.ValueUnitPairProperty;
 import engine.util.Tuple;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.DoubleExpression;
 import javafx.beans.binding.ObjectExpression;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 public class UIUtils
 {
@@ -23,11 +22,14 @@ public class UIUtils
             case VIEW_HEIGHT -> Units.getViewHeightUnitProperty();
             case VIEW_MIN -> Units.getViewMinUnitProperty();
             case VIEW_MAX -> Units.getViewMaxUnitProperty();
-            case PERCENT -> percentProperty.divide(100);
+            case PERCENT -> percentProperty.divide(100); //TODO: divide by 100
             case PIXEL -> Window.getPixelConversionFactorProperty();
             case WORLD -> Units.getWorldUnitProperty();
             case FRACTIONAL ->
             {
+                DoubleProperty x = new SimpleDoubleProperty();
+                x.divide(0);
+
                 if(fractionalProperty == null)
                     throw new UnsupportedOperationException("Fractional units can only be used for defining grid cells.");
 
@@ -37,6 +39,32 @@ public class UIUtils
         };
     }
 
+    public static ObjectExpression<Double> divBinding(ObjectExpression<Double> first, ObjectExpression<Double> second)
+    {
+        return Bindings.createObjectBinding(() ->
+        {
+            if(first.get() == null || second.get() == null)
+                return null;
+
+            return first.get() / second.get();
+        });
+    }
+    public static ObjectExpression<Double> divBinding(ObjectExpression<Double> first, double second)
+    {
+        return Bindings.createObjectBinding(() ->
+        {
+            if(first.get() == null)
+                return null;
+
+            return first.get() / second;
+        });
+    }
+
+
+
+
+
+
     public static DoubleExpression createMinBinding(DoubleProperty property1, DoubleProperty property2)
     {
         return Bindings.createDoubleBinding(() -> Math.min(property1.get(), property2.get()), property1, property2);
@@ -45,7 +73,7 @@ public class UIUtils
     {
         return Bindings.createDoubleBinding(() -> Math.max(property1.get(), property2.get()), property1, property2);
     }
-    public static <T> ObjectExpression<T> createCompetingBinding(final ObjectProperty<T> holder1, final ObjectProperty<T> holder2)
+    public static <T> ObjectExpression<T> createCompetingObjectBinding(final ObjectProperty<T> holder1, final ObjectProperty<T> holder2)
     {
         return Bindings.createObjectBinding(() ->
         {
@@ -57,15 +85,15 @@ public class UIUtils
     public static DoubleExpression createNUBinding(
             DoubleExpression percentProperty,
             DoubleExpression fractionProperty,
-            ObjectProperty<Tuple<Double, Unit>> holder)
+            ValueUnitPairProperty holder)
     {
         return Bindings.createDoubleBinding(() ->
         {
             if(holder.get() == null)
                 return 0d;
 
-            var value = holder.get().first;
-            var unit = holder.get().second;
+            var value = holder.get().value();
+            var unit = holder.get().unit();
 
             return value * getUnitProperty(unit, percentProperty, fractionProperty).get();
         }, holder, Units.getTriggerProperty());

@@ -1,14 +1,18 @@
 package engine.ui;
 
+import engine.core.Window;
+import engine.ui.util.ValueUnitPairProperty;
 import engine.util.PivotPoint;
 import engine.util.Tuple;
 import engine.util.math.IVec4;
 import engine.util.math.Vec2;
+import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,8 +22,19 @@ public class UIStyle
     public final ObjectProperty<Double> rotationProperty = new SimpleObjectProperty<>(null);
     public final ObjectProperty<PivotPoint> rotationPivotPointProperty = new SimpleObjectProperty<>(null);
 
-    public final ObjectProperty<Tuple<Double, Unit>> widthProperty = new SimpleObjectProperty<>(null);
-    public final ObjectProperty<Tuple<Double, Unit>> heightProperty = new SimpleObjectProperty<>(null);
+
+
+
+    //private final HashMap<String, ObjectProperty<?>>
+
+
+
+
+
+
+
+    public final ValueUnitPairProperty widthProperty = new ValueUnitPairProperty(null);
+    public final ValueUnitPairProperty heightProperty = new ValueUnitPairProperty(null);
 
     public final ObjectProperty<Tuple<Double, Unit>> minWidthProperty = new SimpleObjectProperty<>(null);
     public final ObjectProperty<Tuple<Double, Unit>> minHeightProperty = new SimpleObjectProperty<>(null);

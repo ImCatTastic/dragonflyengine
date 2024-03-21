@@ -2,6 +2,7 @@ package engine.ui;
 
 import engine.ui.event.EventHandler;
 import engine.ui.layout.UILayout;
+import engine.ui.util.Insets;
 import engine.util.Tuple;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleExpression;
@@ -31,36 +32,29 @@ public abstract class UIComponent
     public final Pane container_foreground = new Pane(); //store foreground elements, remove them when new element is added, then add back
     private final EventHandler eventHandler = new EventHandler(container_background);
 
-
-    protected final DoubleProperty offsetX = new SimpleDoubleProperty();
-    protected final DoubleProperty offsetY = new SimpleDoubleProperty();
-
-    protected final ObjectProperty<Tuple<Double, Unit>> stretchWidthProperty = new SimpleObjectProperty<>(null);
-    protected final ObjectProperty<Tuple<Double, Unit>> stretchHeightProperty = new SimpleObjectProperty<>(null);
-
     protected final DoubleProperty minDimensionProperty = new SimpleDoubleProperty();
     protected final DoubleProperty maxDimensionProperty = new SimpleDoubleProperty();
-
-
-    protected final DoubleProperty topProperty = new SimpleDoubleProperty(0.0d);
-    protected final DoubleProperty bottomProperty = new SimpleDoubleProperty(0.0d);
-    protected final DoubleProperty leftProperty = new SimpleDoubleProperty(0.0d);
-    protected final DoubleProperty rightProperty = new SimpleDoubleProperty(0.0d);
-
-
-    public final ObjectProperty<Anchor.Horizontal> horizontalAnchorProperty = new SimpleObjectProperty<>(Anchor.Horizontal.CENTER);
-    public final ObjectProperty<Anchor.Vertical> verticalAnchorProperty = new SimpleObjectProperty<>(Anchor.Vertical.CENTER);
-
-
-
-    protected final UIBoundingBox bounds = new UIBoundingBox();
-    protected final UIBoundingBox parentBounds = new UIBoundingBox();
+    protected final Insets padding = new Insets();
+    protected final Insets margin = new Insets();
     protected final UIBoundingBox layoutBounds = new UIBoundingBox();
 
-
+    protected final DoubleProperty xProperty = new SimpleDoubleProperty();
+    protected final DoubleProperty yProperty = new SimpleDoubleProperty();
+    protected final DoubleProperty widthProperty = new SimpleDoubleProperty();
+    protected final DoubleProperty heightProperty = new SimpleDoubleProperty();
+    protected final DoubleProperty parentWidthProperty = new SimpleDoubleProperty();
+    protected final DoubleProperty parentHeightProperty = new SimpleDoubleProperty();
 
     public UIComponent()
     {
+        widthProperty.bind(UIUtils.createNUBinding(parentWidthProperty, null, userStyle.widthProperty));
+        heightProperty.bind(UIUtils.createNUBinding(parentHeightProperty, null, userStyle.heightProperty));
+
+
+
+        userStyle.horizontalAnchorProperty.addListener(x -> adjustVerticalTransform());
+        userStyle.horizontalAnchorProperty.addListener(x -> adjustVerticalTransform());
+
         verticalAnchorProperty.addListener(x -> adjustVerticalTransform());
         horizontalAnchorProperty.addListener(x -> adjustHorizontalTransform());
 
@@ -103,18 +97,16 @@ public abstract class UIComponent
 
     protected void load()
     {
-        var p_w = getIfParentOrDefaultD(parent.bounds.widthProperty, 0d);
-        var p_h = getIfParentOrDefaultD(parent.bounds.heightProperty, 0d);
-        var c_w = containmentStyle.widthProperty;
-        var c_h = containmentStyle.heightProperty;
-        var u_w = containmentStyle.widthProperty;
-        var u_h = containmentStyle.heightProperty;
+        var l_w = layoutBounds.widthProperty;
+        var l_h = layoutBounds.heightProperty;
+        var u_w = UIUtils.createNUBinding(parentBounds.widthProperty, null, userStyle.widthProperty);
+        var u_h = UIUtils.createNUBinding(parentBounds.heightProperty, null, userStyle.heightProperty);
 
         bounds.bind(
                 new SimpleDoubleProperty(0.0d),
                 new SimpleDoubleProperty(0.0d),
-                UIUtils.createNUCMBinding(p_w, null, c_w, stretchWidthProperty, u_w),
-                UIUtils.createNUCMBinding(p_h, null, c_h, stretchHeightProperty, u_h)
+                UIUtils.createNUCMBinding(parentBounds.widthProperty, null, l_w, u_w),
+                UIUtils.createNUCMBinding(parentBounds.heightProperty, null, l_h, u_h)
         );
 
         minDimensionProperty.bind(UIUtils.createMinBinding(bounds.widthProperty, bounds.heightProperty));
@@ -125,8 +117,8 @@ public abstract class UIComponent
         bottomProperty.bind(UIUtils.createNUBinding(null, p_h, userStyle.bottomProperty));
         rightProperty.bind(UIUtils.createNUBinding(null, p_w, userStyle.rightProperty));
 
-        horizontalAnchorProperty.bind(UIUtils.createCompetingBinding(containmentStyle.horizontalAnchorProperty, userStyle.horizontalAnchorProperty));
-        verticalAnchorProperty.bind(UIUtils.createCompetingBinding(containmentStyle.verticalAnchorProperty, userStyle.verticalAnchorProperty));
+        horizontalAnchorProperty.bind(UIUtils.createCompetingObjectBinding(containmentStyle.horizontalAnchorProperty, userStyle.horizontalAnchorProperty));
+        verticalAnchorProperty.bind(UIUtils.createCompetingObjectBinding(containmentStyle.verticalAnchorProperty, userStyle.verticalAnchorProperty));
 
         userStyle.gridColumnsProperty.addListener(x ->
         {
